@@ -20,6 +20,7 @@ from events.sitemap import ScheduledEventSitemap
 # from lazer.views import list as laser_list
 from lazer.views import map as laser_map
 from lazer.views import map_data as laser_map_data
+from pbaabp.admin import organizer_admin
 from pbaabp.views import (
     EmailLoginView,
     _newsletter_signup_partial,
@@ -69,6 +70,7 @@ urlpatterns = [
     # path("tools/laser/list/", laser_list),
     path("", include("pages.urls")),
     path("admin/", admin.site.urls),
+    path("organizer/", organizer_admin.urls),
     path("cms/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path(f"mailjet/{settings.MAILJET_SECRET_SIGNUP_URL}/", newsletter_bridge),
