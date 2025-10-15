@@ -23,8 +23,8 @@
     <tbody>
       {% for nomination in nominations %}
       <tr>
-        <td>{{ nomination.nominee.get_full_name }}</td>
-        <td>{{ nomination.nominator.get_full_name }}</td>
+        <td>{{ nomination.nominee.user.first_name }} {{ nomination.nominee.user.last_name }}</td>
+        <td>{{ nomination.nominator.first_name }} {{ nomination.nominator.last_name }}</td>
         <td>{{ nomination.created_at|date:"F j, Y" }}</td>
         <td>
           <a href="{% url 'nomination_view' election.slug nomination.id %}">View</a>

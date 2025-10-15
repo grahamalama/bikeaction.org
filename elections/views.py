@@ -329,20 +329,22 @@ def nomination_respond(request, election_slug, pk):
                 nomination.acceptance_date = timezone.now()
                 nomination.acceptance_note = note
                 nomination.save()
+                nominator_name = get_user_display_name(nomination.nominator)
                 messages.success(
                     request,
-                    f"You have accepted the nomination from "
-                    f"{nomination.nominator.get_full_name()} for {election.title}. Good luck!",
+                    f"You have accepted the nomination from {nominator_name} "
+                    f"for {election.title}. Good luck!",
                 )
             elif action == "decline":
                 nomination.acceptance_status = Nomination.AcceptanceStatus.DECLINED
                 nomination.acceptance_date = timezone.now()
                 nomination.acceptance_note = note
                 nomination.save()
+                nominator_name = get_user_display_name(nomination.nominator)
                 messages.success(
                     request,
-                    f"You have declined the nomination from "
-                    f"{nomination.nominator.get_full_name()} for {election.title}.",
+                    f"You have declined the nomination from {nominator_name} "
+                    f"for {election.title}.",
                 )
             else:
                 messages.error(request, "Invalid action.")
