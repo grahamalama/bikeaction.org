@@ -431,7 +431,7 @@ tzdata==2025.1
     #   celery
     #   icalendar
     #   kombu
-urllib3==2.3.0
+urllib3==2.5.0
     # via
     #   botocore
     #   django-anymail
