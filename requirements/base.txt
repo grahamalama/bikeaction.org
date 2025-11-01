@@ -363,7 +363,7 @@ redis==5.2.1
     #   redis-lock-py
 redis-lock-py==1.1.1
     # via -r base.in
-requests==2.32.3
+requests==2.32.4
     # via
     #   django-anymail
     #   stripe
