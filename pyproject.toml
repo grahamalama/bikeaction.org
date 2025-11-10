@@ -1,8 +1,8 @@
 [tool.black]
-exclude = "lazer_app"
+exclude = "lazer_app|media"
 line-length = 99
 [tool.isort]
 profile = "black"
-skip_glob = ["lazer_app/*"]
+skip_glob = ["lazer_app/*","media/*"]
 [tool.coverage.run]
 omit = []
