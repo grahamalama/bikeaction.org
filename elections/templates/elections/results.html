@@ -29,7 +29,7 @@
   <div style="margin-bottom: 1.5rem;">
     <h2 style="margin: 0;">Board Election Results</h2>
     <p style="margin: 0.5rem 0 0 0; color: #666;">
-      District seat winners (by district number), then at-large winners (alphabetically).
+      District seat winners (by district number), then unreserved winners (alphabetically).
     </p>
   </div>
 
@@ -54,11 +54,11 @@
           </div>
           {% if candidate.seat_type == 'district' %}
           <div style="background-color: #28a745; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.85em;">
-            DISTRICT
+            RESERVED
           </div>
           {% elif candidate.seat_type == 'at_large' %}
           <div style="background-color: #007bff; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.85em;">
-            AT-LARGE
+            UNRESERVED
           </div>
           {% endif %}
         </div>
