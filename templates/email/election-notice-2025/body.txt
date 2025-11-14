@@ -1,0 +1,47 @@
+Hi {{ first_name }},
+
+<small><i>You are receiving this email from <a href="https://bikeaction.org/">Philly Bike Action</a> because you are a PBA Member eligible to vote in this election.</i></small> 
+
+**Vote for the next PBA Board of Directors before Nov 21**
+
+Voting is now open for the 2026 PBA Board of Directors. Candidates must be approved by PBA Members to become Directors. All ballots must be submitted online by **NOON Nov 21, 2025**.
+
+<div style="text-align: center">
+<a class="submit-button" href="https://bikeaction.org/elections/board-election-2025/vote/">Cast your Ballot</a><br>
+<small>(you will need to log in to your PBA account)</small>
+</div>
+
+<u>How to vote</u>
+
+**Check every candidate you approve of.**  
+<b>Vote for <u>any number</u> of candidates in <u>any district</u>.</b>
+
+We are using an approval voting system. This means you vote for any candidates that you would 'approve' of being on the board. You can vote for as many or as few as you would like, from any district.
+
+Winners will be announced by email by Dec 1\.
+
+<u>Reviewing the candidates</u>
+
+Click the icon next to each candidate to read their personal statement and/or endorsement statements submitted by other members.
+
+While voting, remember that the Board is responsible for managing PBA's finances, staying on mission, approving projects, and steering the organization.
+
+The next board will serve a 1-year term from Jan–Dec 2026\.
+
+<u>How the seats are allocated</u>
+
+There are 10 possible seats in this year's election. One seat is reserved for each active district (this year, that is D1–5). The top vote-getter in each district will win this reserved seat. There are 5 unreserved seats that will be filled by the next highest vote-getters from any district, after the reserved seats are filled (see the graphic below for more information). Every candidate must receive a certain amount of votes from their own district to become a Director, so it is important for Members to vote for the candidates they want to serve on the Board. 
+
+<u>Strategic Plan Approval</u>
+
+Your ballot will also link to PBA’s first **Strategic Plan**, which outlines PBA’s core values and overarching campaign priorities over the next few years, along with measurable quantitative indicators of PBA’s performance as an advocacy organization.
+
+This document was written by the PBA Strategy Team with substantial input from Organizers and volunteers and was overseen by the Board of Directors. It is meant to guide the future Board’s decision-making and financial allocations. Real-world circumstances are unpredictable, but the plan serves as a foundational path forward.
+
+Please check **Yes** if you approve of the general content and direction of the Strategic Plan.
+
+<div style="text-align: center">
+  <img src="templates/email/election-notice-2025/graphic.png" style="width: 80%">
+</div>
+
+**Philly Bike Action**
