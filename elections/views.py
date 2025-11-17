@@ -759,11 +759,19 @@ def calculate_election_results(election):
     """
     from collections import Counter, defaultdict
 
+    from django.db.models import Count, Q
+
     # Get all ballots with optimized queries
+    # Only count ballots that have at least one answer (candidate vote OR question vote)
     ballots = (
         Ballot.objects.filter(election=election)
         .select_related("voter__profile")
-        .prefetch_related("candidate_votes__nominee__user__profile")
+        .prefetch_related("candidate_votes__nominee__user__profile", "question_votes")
+        .annotate(
+            num_candidate_votes=Count("candidate_votes"),
+            num_question_votes=Count("question_votes"),
+        )
+        .filter(Q(num_candidate_votes__gt=0) | Q(num_question_votes__gt=0))
     )
     total_ballots = ballots.count()
 

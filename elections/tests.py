@@ -1201,3 +1201,45 @@ class VotingTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Results")
+
+    @patch("elections.models.Election.get_eligible_voters")
+    def test_empty_ballots_not_counted_in_turnout(self, mock_eligible):
+        """Empty ballots (with no votes) should not be counted in voter turnout."""
+        from elections.models import Ballot, QuestionVote, Vote
+        from elections.views import calculate_election_results
+        from profiles.models import Profile
+
+        # Create 2 additional voters
+        voter2 = User.objects.create_user(
+            username="voter2", email="voter2@test.com", first_name="Voter2", last_name="Test"
+        )
+        Profile.objects.create(user=voter2, street_address="123 Test St", zip_code="19123")
+
+        voter3 = User.objects.create_user(
+            username="voter3", email="voter3@test.com", first_name="Voter3", last_name="Test"
+        )
+        Profile.objects.create(user=voter3, street_address="456 Test St", zip_code="19123")
+
+        # Close voting for this election
+        self.election.voting_closes = timezone.now() - timedelta(hours=1)
+        self.election.save()
+
+        # Create ballot 1 with candidate votes (should be counted)
+        ballot1 = Ballot.objects.create(election=self.election, voter=self.voter)
+        Vote.objects.create(ballot=ballot1, nominee=self.nominee_record1)
+
+        # Create ballot 2 with question votes only (should be counted)
+        ballot2 = Ballot.objects.create(election=self.election, voter=voter2)
+        QuestionVote.objects.create(ballot=ballot2, question=self.question, answer=True)
+
+        # Create ballot 3 with NO votes (should NOT be counted)
+        Ballot.objects.create(election=self.election, voter=voter3)
+
+        # Calculate results
+        results = calculate_election_results(self.election)
+
+        # Should count only 2 ballots (ballot1 and ballot2), not ballot3
+        self.assertEqual(results["total_ballots"], 2)
+
+        # Verify all 3 ballots exist in database
+        self.assertEqual(Ballot.objects.filter(election=self.election).count(), 3)
