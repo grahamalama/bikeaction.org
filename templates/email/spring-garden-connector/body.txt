@@ -1,0 +1,42 @@
+Hello {{ profile.user.first_name }},
+
+<i><small>
+You are receiving this email from [Philly Bike Action](https://bikeaction.org) because you have a PBA account and live near Spring Garden St.
+</small></i>
+
+<div style="text-align: center">
+  <img src="templates/email/spring-garden-connector/graphic.png" style="width: 80%">
+</div>
+
+The City of Philadelphia is hosting an open house for the long-awaited  **Spring Garden Connector** project. This will be a drop-in event where the public can learn about the project and leave comments.
+
+<div style="text-align: center">
+  When:  <b>Wednesday, Nov. 19</b>  <br>
+  What time:  <b>5-8 p.m.</b>  <br>
+  Where:   <b>School District of Philadelphia Building</b>   <br>
+  440 N Broad St. Philadelphia, PA 19130
+</div>
+
+<div style="text-align: center">
+<a class="submit-button" href="https://bikeaction.org/events/spring-garden-connector-open-house-non-pba-event/">ADD TO CALENDAR</a><br>
+<small>(you will need to log in to your PBA account)</small>
+</div>
+
+The proposed project includes many excellent safety improvements, including:
+
+* East-west **concrete protected bike lanes** on Spring Garden St from Delaware Ave. to Pennsylvania Ave  
+* Shorter pedestrian crossings across Spring Garden  
+* Narrower vehicular lanes
+
+
+These improvements are great, but we can do even better\! **Attend the open house and leave feedback supporting the following additional improvements**:
+
+* Traffic calming that lowers speeds to an average of 25 mph  
+* Shorten ALL pedestrian crossings with curb extensions  
+* Leading intervals for pedestrians  
+* Bike signals  
+* A 5 to 3 lane reduction (road diet)
+
+Drop by the open house, **Wednesday November 19**,  any time between 5 and 8 pm to find out more about the project and to leave comments about how to make it even safer for cyclists and pedestrians.
+
+**Philly Bike Action**
