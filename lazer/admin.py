@@ -119,6 +119,12 @@ class ViolationReportAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         "image_tag_final",
     )
     actions = ["bulk_resubmit_violations"]
+    raw_id_fields = ("submission",)  # Use raw ID field instead of dropdown
+
+    def get_queryset(self, request):
+        """Optimize queries by prefetching related submission and user."""
+        qs = super().get_queryset(request)
+        return qs.select_related("submission", "submission__created_by")
 
     @button(
         label="Resubmit",
