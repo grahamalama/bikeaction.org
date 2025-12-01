@@ -497,13 +497,22 @@ async def submit_form_with_playwright(
                     )
                     await violation_report.asave()
 
+            # Click submit button
+            submit_button = page.get_by_role("button", name="Submit")
+            await submit_button.click()
+
             if not settings.DEBUG:
-                async with page.expect_request(
-                    lambda request: request.url == SUBMIT_SMARTSHEET_URL
-                    and request.method.lower() == "post"
-                ) as _:
-                    # Click submit button by value instead of fragile ID
-                    await page.get_by_role("button", name="Submit").click()
+                # Wait for the button text to change to "Processing..."
+                await expect(page.get_by_role("button", name="Processing...")).to_be_visible(
+                    timeout=5000
+                )
+                logging.info("Submission started - button shows 'Processing...'")
+
+                # Wait for "Processing..." to disappear (submission completed)
+                await expect(page.get_by_role("button", name="Processing...")).not_to_be_visible(
+                    timeout=60000  # Allow up to 60s for form processing
+                )
+                logging.info("Form processing completed - 'Processing...' button disappeared")
 
             if screenshot_dir:
                 await page.screenshot(
@@ -515,13 +524,15 @@ async def submit_form_with_playwright(
                     )
                     await violation_report.asave()
 
-            # Wait for submission to complete and check for success message
+            # Wait for page to settle after submission
             await page.wait_for_load_state("networkidle")
+
             if not settings.DEBUG:
-                # PowerApps form shows "Submission completed successfully." on success
+                # Verify success message is displayed
                 await expect(page.get_by_text("Submission completed successfully.")).to_be_visible(
-                    timeout=10000
+                    timeout=5000
                 )
+                logging.info("Success message confirmed: 'Submission completed successfully.'")
 
             if screenshot_dir:
                 await page.screenshot(
