@@ -515,14 +515,13 @@ async def submit_form_with_playwright(
                     )
                     await violation_report.asave()
 
-            # make sure there is a POST to the form URL and it returned 200
-            # also, the submission page should have an h1 element with specific
+            # Wait for submission to complete and check for success message
             await page.wait_for_load_state("networkidle")
             if not settings.DEBUG:
-                # validate the submission page
-                await expect(
-                    page.locator('div[data-client-id="submission-confirmation-container"]')
-                ).to_be_visible(timeout=10000)
+                # PowerApps form shows "Submission completed successfully." on success
+                await expect(page.get_by_text("Submission completed successfully.")).to_be_visible(
+                    timeout=10000
+                )
 
             if screenshot_dir:
                 await page.screenshot(
