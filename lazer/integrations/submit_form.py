@@ -11,9 +11,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db.models.fields.files import ImageFieldFile
 from django.utils import timezone
-from playwright.async_api import FilePayload
-from playwright.async_api import TimeoutError as PlaywrightTimeoutError
-from playwright.async_api import async_playwright, expect
+from playwright.async_api import FilePayload, async_playwright, expect
 from playwright_stealth import stealth_async
 
 from lazer.models import ViolationReport, ViolationSubmission
@@ -497,22 +495,11 @@ async def submit_form_with_playwright(
                     )
                     await violation_report.asave()
 
-            # Click submit button
-            submit_button = page.get_by_role("button", name="Submit")
-            await submit_button.click()
-
+            # Click submit button (skip in DEBUG mode)
             if not settings.DEBUG:
-                # Wait for the button text to change to "Processing..."
-                await expect(page.get_by_role("button", name="Processing...")).to_be_visible(
-                    timeout=5000
-                )
-                logging.info("Submission started - button shows 'Processing...'")
-
-                # Wait for "Processing..." to disappear (submission completed)
-                await expect(page.get_by_role("button", name="Processing...")).not_to_be_visible(
-                    timeout=60000  # Allow up to 60s for form processing
-                )
-                logging.info("Form processing completed - 'Processing...' button disappeared")
+                submit_button = page.get_by_role("button", name="Submit")
+                await submit_button.click()
+                logging.info("Clicked submit button, waiting for success message...")
 
             if screenshot_dir:
                 await page.screenshot(
@@ -528,9 +515,9 @@ async def submit_form_with_playwright(
             await page.wait_for_load_state("networkidle")
 
             if not settings.DEBUG:
-                # Verify success message is displayed
+                # Wait for success message (give it plenty of time for form processing)
                 await expect(page.get_by_text("Submission completed successfully.")).to_be_visible(
-                    timeout=5000
+                    timeout=60000  # 60 seconds for slow PowerApps backend processing
                 )
                 logging.info("Success message confirmed: 'Submission completed successfully.'")
 
@@ -545,15 +532,25 @@ async def submit_form_with_playwright(
                     await violation_report.asave()
             violation_report.submitted = timezone.now()
 
-        except PlaywrightTimeoutError:
-            logging.error("Playwright timed out.", exc_info=True)
+        except Exception as e:
+            # Catch all errors (AssertionError, TimeoutError, etc.)
+            logging.error(f"Form submission failed: {type(e).__name__}: {e}", exc_info=True)
+
+            # Always capture error screenshot for debugging
             if screenshot_dir:
-                await page.screenshot(
-                    path=f"{screenshot_dir}/screenshot-error.png", full_page=True
-                )
-                with open(f"{screenshot_dir}/screenshot-error.png", "rb") as f:
-                    violation_report.screenshot_error.save("screenshot-error.png", f, save=False)
-                    await violation_report.asave()
+                try:
+                    await page.screenshot(
+                        path=f"{screenshot_dir}/screenshot-error.png", full_page=True
+                    )
+                    with open(f"{screenshot_dir}/screenshot-error.png", "rb") as f:
+                        violation_report.screenshot_error.save(
+                            "screenshot-error.png", f, save=False
+                        )
+                        await violation_report.asave()
+                except Exception as screenshot_error:
+                    logging.error(f"Failed to capture error screenshot: {screenshot_error}")
+
+            # Cleanup
             if tracing:
                 await context.tracing.stop(path=f"tracing_{tracing_debug_key}.zip")
             await context.close()
