@@ -3,9 +3,26 @@ import uuid
 
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
+from django.contrib.sessions.base_session import AbstractBaseSession
 from django.utils.safestring import mark_safe
 
 User = get_user_model()
+
+
+class LazerSession(AbstractBaseSession):
+    """
+    Separate session model for Lazer app.
+    These sessions are only valid for Lazer API routes and have a longer expiry (1 year).
+    """
+
+    class Meta:
+        db_table = "lazer_session"
+
+    @classmethod
+    def get_session_store_class(cls):
+        from lazer.session_backend import SessionStore
+
+        return SessionStore
 
 
 def generate_share_token():

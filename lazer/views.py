@@ -9,7 +9,7 @@ from importlib import import_module
 import pytz
 from asgiref.sync import sync_to_async
 from django.conf import settings
-from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth import authenticate, get_user_model, logout
 from django.contrib.gis.geos import Point
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
@@ -26,8 +26,10 @@ from lazer.forms import ReportForm, SubmissionForm
 from lazer.integrations.platerecognizer import read_plate
 from lazer.integrations.submit_form import MobilityAccessViolation
 from lazer.models import LazerWrapped, ViolationReport, ViolationSubmission
+from lazer.session_backend import SessionStore as LazerSessionStore
 
-SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+# Keep the default session store for backwards compatibility with existing sessions
+DjangoSessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 User = get_user_model()
 
 
@@ -54,14 +56,17 @@ def api_auth(view_func):
             "Session: "
         ):
             session_key = request.headers["Authorization"].split("Session: ")[1]
-            session = SessionStore(session_key=session_key)
-            request.session = session
-            user_id = session.get("_auth_user_id")
-            try:
-                request.user = User.objects.get(id=user_id)
-                return view_func(request, *args, **kwargs)
-            except User.DoesNotExist:
-                pass
+            # Try LazerSessionStore first, then fall back to Django's session store
+            for store_class in (LazerSessionStore, DjangoSessionStore):
+                session = store_class(session_key=session_key)
+                user_id = session.get("_auth_user_id")
+                if user_id:
+                    try:
+                        request.user = User.objects.get(id=user_id)
+                        request.session = session
+                        return view_func(request, *args, **kwargs)
+                    except User.DoesNotExist:
+                        pass
         return JsonResponse({"error": "invalid auth"}, status=403)
 
     return _wrapped_view
@@ -77,14 +82,17 @@ def aapi_auth(view_func):
             "Session: "
         ):
             session_key = request.headers["Authorization"].split("Session: ")[1]
-            session = SessionStore(session_key=session_key)
-            request.session = session
-            user_id = await session.aget("_auth_user_id")
-            try:
-                request.user = await User.objects.aget(id=user_id)
-                return await view_func(request, *args, **kwargs)
-            except User.DoesNotExist:
-                pass
+            # Try LazerSessionStore first, then fall back to Django's session store
+            for store_class in (LazerSessionStore, DjangoSessionStore):
+                session = store_class(session_key=session_key)
+                user_id = await session.aget("_auth_user_id")
+                if user_id:
+                    try:
+                        request.user = await User.objects.aget(id=user_id)
+                        request.session = session
+                        return await view_func(request, *args, **kwargs)
+                    except User.DoesNotExist:
+                        pass
         return JsonResponse({"error": "invalid auth"}, status=403)
 
     return _wrapped_view
@@ -305,19 +313,21 @@ def login_api(request):
 
     user = authenticate(username=username, password=password)
     if user is not None:
-        login(request, user)
-        request.session.set_expiry(30 * 24 * 60 * 60)
-        session_key = request.session.session_key
-        expiry_date = request.session.get_expiry_date()
+        # Create a LazerSession (separate from Django sessions, 1-year expiry)
+        session = LazerSessionStore()
+        session["_auth_user_id"] = str(user.pk)
+        session["_auth_user_backend"] = user.backend
+        session.set_expiry(365 * 24 * 60 * 60)  # 1 year
+        session.create()
         return JsonResponse(
             {
                 "success": "ok",
-                "username": request.user.email,
-                "first_name": request.user.first_name,
-                "session_key": session_key,
-                "expiry_date": expiry_date,
-                "donor": request.user.profile.donor(),
-                "wrapped": get_wrapped_info(request.user),
+                "username": user.email,
+                "first_name": user.first_name,
+                "session_key": session.session_key,
+                "expiry_date": session.get_expiry_date(),
+                "donor": user.profile.donor(),
+                "wrapped": get_wrapped_info(user),
             },
             status=200,
         )
