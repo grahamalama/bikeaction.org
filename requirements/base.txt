@@ -398,9 +398,7 @@ toml==0.10.2
 tomli==2.2.1
     # via discord-py-interactions
 twisted[tls]==24.11.0
-    # via
-    #   daphne
-    #   twisted
+    # via daphne
 txaio==23.1.1
     # via autobahn
 types-pyyaml==6.0.12.20250516
