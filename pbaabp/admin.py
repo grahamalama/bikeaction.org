@@ -20,6 +20,20 @@ for model in app_models:
         except NotRegistered:
             pass
 
+app_models = apps.get_app_config("wagtaildocs").get_models()
+for model in app_models:
+    try:
+        admin.site.unregister(model)
+    except NotRegistered:
+        pass
+
+app_models = apps.get_app_config("wagtailimages").get_models()
+for model in app_models:
+    try:
+        admin.site.unregister(model)
+    except NotRegistered:
+        pass
+
 
 class OrganizerAccess:
     def has_module_permission(self, request):
