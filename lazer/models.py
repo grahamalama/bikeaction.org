@@ -37,6 +37,7 @@ class ViolationSubmission(models.Model):
     captured_at = models.DateTimeField(db_index=True)
     location = models.PointField(srid=4326)
     image = models.ImageField(upload_to="lazer/violations")
+    plate_recognizer_response = models.JSONField(null=True, blank=True)
 
     def image_tag_no_href(self):
         return mark_safe('<img src="%s" style="max-height: 50px;"/>' % (self.image.url,))
@@ -71,6 +72,8 @@ class ViolationReport(models.Model):
     zip_code = models.CharField()
 
     additional_information = models.CharField(null=True, blank=True)
+
+    redacted_image = models.ImageField(null=True, blank=True, upload_to=report_image_upload_to)
 
     screenshot_before_submit = models.ImageField(
         null=True, blank=True, upload_to=report_image_upload_to
@@ -141,6 +144,16 @@ class ViolationReport(models.Model):
             '<a href="%s"><img src="%s" style="max-height: 50px;"/></a>'
             % (self.screenshot_final.url, self.screenshot_final.url)
         )
+
+    def image_tag_redacted(self):
+        if not self.redacted_image:
+            return "-"
+        return mark_safe(
+            '<a href="%s"><img src="%s" style="max-height: 50px;"/></a>'
+            % (self.redacted_image.url, self.redacted_image.url)
+        )
+
+    image_tag_redacted.short_description = "Redacted Image"
 
 
 class LazerWrapped(models.Model):

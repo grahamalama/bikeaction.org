@@ -13,7 +13,7 @@ from pba_discord.bot import bot
 
 @shared_task
 def submit_violation_report_to_ppa(violation_id):
-    violation_report = ViolationReport.objects.get(id=violation_id)
+    violation_report = ViolationReport.objects.select_related("submission").get(id=violation_id)
     _submit_violation_report_to_ppa(violation_report)
 
 

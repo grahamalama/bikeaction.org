@@ -112,12 +112,14 @@ class ViolationReportAdmin(ExtraButtonsMixin, admin.ModelAdmin):
     )
     readonly_fields = (
         "image_tag_violation",
+        "image_tag_redacted",
         "image_tag_before_submit",
         "image_tag_after_submit",
         "image_tag_success",
         "image_tag_error",
         "image_tag_final",
     )
+    exclude = ("redacted_image",)
     actions = ["bulk_resubmit_violations"]
     raw_id_fields = ("submission",)  # Use raw ID field instead of dropdown
 
