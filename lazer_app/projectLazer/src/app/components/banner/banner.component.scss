@@ -1,0 +1,29 @@
+.banner {
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #fff;
+
+  &.banner-pink {
+    background-color: #ff69b4;
+  }
+
+  &.banner-green {
+    background-color: #64d246;
+  }
+
+  .banner-content {
+    ::ng-deep {
+      p {
+        margin: 0;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: underline;
+        font-weight: 600;
+      }
+    }
+  }
+}

@@ -31,6 +31,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <app-banner></app-banner>
   <ion-card *ngIf="accountService.isDonor && accountService.loggedIn">
     <ion-card-header>
       <ion-card-title>Thanks for being part of the Action!</ion-card-title>

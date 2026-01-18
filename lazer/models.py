@@ -197,3 +197,31 @@ class LazerWrapped(models.Model):
         from django.conf import settings
 
         return f"{settings.SITE_URL}/tools/laser/wrapped/{self.share_token}/"
+
+
+class Banner(models.Model):
+    """Configurable banner displayed at the top of the Lazer app."""
+
+    COLOR_CHOICES = [
+        ("pink", "Pink"),
+        ("green", "Green"),
+    ]
+
+    content = models.TextField(help_text="Markdown content (supports links)")
+    color = models.CharField(max_length=10, choices=COLOR_CHOICES, default="green")
+    is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Banner"
+        verbose_name_plural = "Banners"
+
+    def __str__(self):
+        return f"{self.content[:50]}..." if len(self.content) > 50 else self.content
+
+    def content_html(self):
+        """Render markdown content to HTML."""
+        import markdown
+
+        return markdown.markdown(self.content)

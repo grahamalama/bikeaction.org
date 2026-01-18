@@ -8,7 +8,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from facets.utils import reverse_geocode_point
-from lazer.models import ViolationReport, ViolationSubmission
+from lazer.models import Banner, ViolationReport, ViolationSubmission
 from lazer.tasks import submit_violation_report_to_ppa
 from pbaabp.admin import ReadOnlyLeafletGeoAdminMixin
 
@@ -152,5 +152,24 @@ class ViolationReportAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         )
 
 
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ("content_preview", "color", "is_active", "updated_at")
+    list_filter = ("is_active", "color")
+    list_editable = ("is_active",)
+    readonly_fields = ("created_at", "updated_at")
+
+    def content_preview(self, obj):
+        return obj.content[:80] + "..." if len(obj.content) > 80 else obj.content
+
+    content_preview.short_description = "Content"
+
+    def save_model(self, request, obj, form, change):
+        # Ensure only one banner is active at a time
+        if obj.is_active:
+            Banner.objects.exclude(pk=obj.pk).update(is_active=False)
+        super().save_model(request, obj, form, change)
+
+
 admin.site.register(ViolationSubmission, ViolationSubmissionAdmin)
 admin.site.register(ViolationReport, ViolationReportAdmin)
+admin.site.register(Banner, BannerAdmin)

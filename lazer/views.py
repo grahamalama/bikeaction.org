@@ -25,7 +25,7 @@ from facets.utils import reverse_geocode_point
 from lazer.forms import ReportForm, SubmissionForm
 from lazer.integrations.platerecognizer import read_plate
 from lazer.integrations.submit_form import MobilityAccessViolation
-from lazer.models import LazerWrapped, ViolationReport, ViolationSubmission
+from lazer.models import Banner, LazerWrapped, ViolationReport, ViolationSubmission
 from lazer.session_backend import SessionStore as LazerSessionStore
 
 # Keep the default session store for backwards compatibility with existing sessions
@@ -351,6 +351,20 @@ def check_login(request):
 def logout_api(request):
     logout(request)
     return JsonResponse({"success": "ok"}, status=200)
+
+
+@cache_page(60)
+def banner_api(request):
+    """Return the active banner if one exists."""
+    banner = Banner.objects.filter(is_active=True).first()
+    if banner is None:
+        return JsonResponse({})
+    return JsonResponse(
+        {
+            "content_html": banner.content_html(),
+            "color": banner.color,
+        }
+    )
 
 
 def calculate_wrapped_stats(user, year):
