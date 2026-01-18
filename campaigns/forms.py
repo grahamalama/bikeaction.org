@@ -101,3 +101,11 @@ class PetitionSignatureForm(forms.ModelForm):
             ].help_text += (
                 " and will be included if you choose to send an email along with your signature"
             )
+
+        for checkbox in self.petition.checkboxes.all():
+            field_name = f"checkbox_{checkbox.id}"
+            self.fields[field_name] = forms.BooleanField(
+                label=checkbox.label,
+                help_text=checkbox.help_text,
+                required=checkbox.required,
+            )

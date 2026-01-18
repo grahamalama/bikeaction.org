@@ -82,6 +82,14 @@ def sign_petition(request, petition_slug_or_id):
                 email__iexact=form.instance.email
             ).first()
             form.instance.petition = petition
+
+            checkbox_responses = {}
+            for checkbox in petition.checkboxes.all():
+                field_name = f"checkbox_{checkbox.id}"
+                if field_name in form.cleaned_data:
+                    checkbox_responses[checkbox.label] = form.cleaned_data[field_name]
+            form.instance.checkbox_responses = checkbox_responses
+
             form.save()
 
             email_body = ""

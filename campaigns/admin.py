@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from ordered_model.admin import OrderedModelAdmin
 
-from campaigns.models import Campaign, Petition, PetitionSignature
+from campaigns.models import Campaign, Petition, PetitionCheckbox, PetitionSignature
 from campaigns.tasks import geocode_signature
 from facets.models import District, RegisteredCommunityOrganization
 from pbaabp.admin import ReadOnlyLeafletGeoAdminMixin, organizer_admin
@@ -72,9 +72,35 @@ class OrganizerCampaignAdmin(CampaignAdmin):
         return False
 
 
+class PetitionCheckboxInline(admin.TabularInline):
+    model = PetitionCheckbox
+    fields = ["label", "help_text", "required"]
+    ordering = ["order"]
+    extra = 0
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == "label":
+            field.help_text = "Cannot be changed after creation"
+        return field
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        original_init = formset.form.__init__
+
+        def new_init(self, *args, **kwargs):
+            original_init(self, *args, **kwargs)
+            if self.instance and self.instance.pk:
+                self.fields["label"].disabled = True
+
+        formset.form.__init__ = new_init
+        return formset
+
+
 class PetitionAdmin(admin.ModelAdmin):
     actions = [pretty_report]
     readonly_fields = ["petition_report"]
+    inlines = [PetitionCheckboxInline]
 
     def petition_report(self, obj):
         report = ""
@@ -161,6 +187,40 @@ class DistrictFilter(admin.SimpleListFilter):
         return queryset
 
 
+class CheckboxResponseFilter(admin.SimpleListFilter):
+    title = "Checkbox Response"
+    parameter_name = "checkbox_response"
+
+    def lookups(self, request, model_admin):
+        petition_id = request.GET.get("petition__id__exact") or request.GET.get("petition")
+
+        if petition_id:
+            checkboxes = PetitionCheckbox.objects.filter(petition_id=petition_id)
+            lookups = []
+            for checkbox in checkboxes:
+                lookups.append((f"{checkbox.label}:true", f"{checkbox.label}: Yes"))
+                lookups.append((f"{checkbox.label}:false", f"{checkbox.label}: No"))
+        else:
+            checkboxes = PetitionCheckbox.objects.select_related("petition").all()
+            lookups = []
+            for checkbox in checkboxes:
+                petition_title = str(checkbox.petition)[:20]
+                lookups.append(
+                    (f"{checkbox.label}:true", f"{petition_title}... - {checkbox.label}: Yes")
+                )
+                lookups.append(
+                    (f"{checkbox.label}:false", f"{petition_title}... - {checkbox.label}: No")
+                )
+        return lookups
+
+    def queryset(self, request, queryset):
+        if self.value():
+            label, value = self.value().rsplit(":", 1)
+            checked = value == "true"
+            return queryset.filter(checkbox_responses__contains={label: checked})
+        return queryset
+
+
 class PetitionSignatureAdmin(admin.ModelAdmin, ReadOnlyLeafletGeoAdminMixin):
     actions = [csvexport, geocode, heatmap]
     list_display = [
@@ -172,7 +232,7 @@ class PetitionSignatureAdmin(admin.ModelAdmin, ReadOnlyLeafletGeoAdminMixin):
         "visible",
         "get_petition",
     ]
-    list_filter = ["petition", "visible", DistrictFilter]
+    list_filter = ["petition", "visible", DistrictFilter, CheckboxResponseFilter]
     ordering = ["-created_at"]
     search_fields = ["first_name", "last_name", "comment", "email", "zip_code"]
     readonly_fields = [
@@ -187,7 +247,19 @@ class PetitionSignatureAdmin(admin.ModelAdmin, ReadOnlyLeafletGeoAdminMixin):
         "comment",
         "petition",
         "created_at",
+        "checkbox_responses_display",
     ]
+
+    def checkbox_responses_display(self, obj):
+        if not obj.checkbox_responses:
+            return "-"
+        lines = []
+        for label, checked in obj.checkbox_responses.items():
+            status = "Yes" if checked else "No"
+            lines.append(f"{label}: {status}")
+        return "\n".join(lines) if lines else "-"
+
+    checkbox_responses_display.short_description = "Checkbox Responses"
 
     csvexport_selected_fields = [
         "first_name",
@@ -200,6 +272,7 @@ class PetitionSignatureAdmin(admin.ModelAdmin, ReadOnlyLeafletGeoAdminMixin):
         "zip_code",
         "comment",
         "petition.title",
+        "checkbox_responses",
     ]
 
     def get_name(self, obj):

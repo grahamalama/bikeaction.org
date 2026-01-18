@@ -224,6 +224,20 @@ class Petition(models.Model):
         return self.title
 
 
+class PetitionCheckbox(OrderedModel):
+    petition = models.ForeignKey(Petition, on_delete=models.CASCADE, related_name="checkboxes")
+    label = models.CharField(max_length=512)
+    help_text = models.CharField(max_length=1024, blank=True, default="")
+    required = models.BooleanField(default=False)
+    order_with_respect_to = "petition"
+
+    class Meta(OrderedModel.Meta):
+        pass
+
+    def __str__(self):
+        return self.label
+
+
 class PetitionSignature(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     petition = models.ForeignKey(
@@ -273,6 +287,8 @@ class PetitionSignature(models.Model):
     )
     location = models.PointField(blank=True, null=True, srid=4326)
 
+    checkbox_responses = models.JSONField(default=dict, blank=True)
+
     newsletter_opt_in = models.BooleanField(
         blank=False, default=True, verbose_name=_("Newsletter Opt-In")
     )
@@ -285,6 +301,15 @@ class PetitionSignature(models.Model):
         if self.location is None:
             return None
         return District.objects.filter(mpoly__contains=self.location).first()
+
+    @property
+    def checkbox_responses_formatted(self):
+        if not self.checkbox_responses:
+            return ""
+        parts = []
+        for label, checked in self.checkbox_responses.items():
+            parts.append(f"{label}: {'Yes' if checked else 'No'}")
+        return "; ".join(parts)
 
     def save(self, *args, **kwargs):
         if self.email and self.newsletter_opt_in:
