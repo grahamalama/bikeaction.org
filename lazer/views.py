@@ -130,6 +130,10 @@ async def submission_api(request):
                 ),
             )
 
+            # Store the Plate Recognizer response for later use (e.g., redacting plates)
+            submission.plate_recognizer_response = data
+            await submission.asave()
+
             vehicles = data.get("results", [])
             return JsonResponse(
                 {
