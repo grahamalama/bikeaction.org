@@ -1,0 +1,21 @@
+Hello {{ first_name }},
+
+<small><i>You are receiving this email because you have a <a href="https://bikeaction.org/">Philly Bike Action</a> account and you live within the boundaries of the 15th Ward in Fairmount, Francisville, and Spring Garden.</i></small>
+
+PBA organizers are looking for involved neighbors to run for committeeperson (“CP”) in the 15th Ward.
+
+<div style="width: 100%; text-align: center;">
+  <figure style="width: 80%">
+    <img style="width: 100%" src="templates/email/15th-ward/ward-15.png">
+    <figcaption>Philadelphia 15th Ward</figcaption>
+  </figure>
+</div>
+
+Why run? With enough CPs, we can make demands of 5th District Councilmember Jeffery Young, Jr. to pursue infrastructure changes like bike lanes, daylighting, and traffic calming. 
+
+**Please reply to this email by Tuesday, February 3 to indicate your interest.** The responses we receive will determine our next steps (Zoom call, coffee chat, something else). **No commitment is necessary at this time.** 
+
+We can answer any questions you may have about running for and serving as a CP. In the meantime, this [handbook](https://seventy.org/uploads/attachments/ckz761n1l2lkl5onp30pivvui-how-to-run-for-committee-person-handbook-last-updated-01-24-22.pdf) from the good government group Committee of 70 may be helpful. 
+
+Thank you for your continued support,  
+**Philly Bike Action**
