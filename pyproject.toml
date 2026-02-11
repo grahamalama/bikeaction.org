@@ -1,15 +1,16 @@
-[tool.black]
-exclude = ".venv|lazer_app|media"
-line-length = 99
-[tool.isort]
-profile = "black"
-skip_glob = [".venv/*","lazer_app/*","media/*"]
 [tool.coverage.run]
 omit = []
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 100
 
 [project]
 name="bikeaction.org"
 version="0.0.0"
+requires-python = "==3.13.*"
 dependencies = [
     "asgiref>=3.8.1",
     "beautifulsoup4>=4.13.3",
@@ -70,10 +71,7 @@ deploy = [
     "uvicorn>=0.27.0",
 ]
 dev = [
-    "black>=24.3.0",
-    "flake8>=7.0.0",
     "hupper>=1.12.1",
-    "isort>=5.13.2",
     "jurigged>=0.5.7",
-    "pip-tools>=7.3.0",
+    "ruff>=0.15.0",
 ]

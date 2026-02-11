@@ -32,6 +32,7 @@ FROM base AS dev
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 ENV UV_PROJECT_ENVIRONMENT=/home/user/.venv
+ENV RUFF_CACHE_DIR=/home/user/.cache/ruff
 ENV PATH="${PATH}:/home/user/.local/bin"
 RUN groupadd -o -g $GROUP_ID -r usergrp && \
     useradd -o -m -u $USER_ID -g $GROUP_ID user && \
