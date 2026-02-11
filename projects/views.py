@@ -21,7 +21,7 @@ def project_application_view(request, pk=None):
         return redirect("profile")
 
     if not apps_connected:
-        message = "You must connect your discord account " "to submit a project application."
+        message = "You must connect your discord account to submit a project application."
         messages.add_message(request, messages.ERROR, message)
         return redirect("profile")
 
@@ -45,7 +45,7 @@ def project_application(request, pk=None):
         return redirect("profile")
 
     if not apps_connected:
-        message = "You must connect your discord account " "to submit a project application."
+        message = "You must connect your discord account to submit a project application."
         messages.add_message(request, messages.ERROR, message)
         return redirect("profile")
 

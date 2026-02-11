@@ -98,9 +98,7 @@ class ViolationReport(models.Model):
         return self.submission.created_by
 
     def image_tag_violation_no_href(self):
-        return mark_safe(
-            '<img src="%s" style="max-height: 50px;"/>' % (self.submission.image.url,)
-        )
+        return mark_safe('<img src="%s" style="max-height: 50px;"/>' % (self.submission.image.url,))
 
     image_tag_violation_no_href.short_description = "Image"
 

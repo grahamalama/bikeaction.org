@@ -46,9 +46,7 @@ class District(Facet):
 
 
 class RegisteredCommunityOrganization(Facet):
-    intersecting_zips = Relationship(
-        to="facets.zipcode", predicate=Q(mpoly__intersects=L("mpoly"))
-    )
+    intersecting_zips = Relationship(to="facets.zipcode", predicate=Q(mpoly__intersects=L("mpoly")))
     intersecting_districts = Relationship(
         to="facets.district", predicate=Q(mpoly__intersects=L("mpoly"))
     )
