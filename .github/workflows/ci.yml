@@ -26,7 +26,7 @@ jobs:
               var-cache-apt
               var-lib-apt
               root-npm
-              user-cache-pip
+              user-cache-uv
           key: ${{ runner.os }}-cache-mount-${{ hashFiles('Dockerfile.dev') }}
           restore-keys: |
             ${{ runner.os }}-cache-mount-
@@ -41,7 +41,7 @@ jobs:
               "var-cache-apt": "/var/cache/apt",
               "var-lib-apt": "/var/lib/apt",
               "root-npm": "/root/.npm",
-              "user-cache-pip": "/home/user/.cache/pip"
+              "user-cache-uv": "/home/user/.cache/uv"
             }
           skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 
@@ -88,7 +88,7 @@ jobs:
               var-cache-apt
               var-lib-apt
               root-npm
-              user-cache-pip
+              user-cache-uv
           key: ${{ runner.os }}-cache-mount-${{ hashFiles('Dockerfile.dev') }}
           restore-keys: |
             ${{ runner.os }}-cache-mount-
@@ -103,7 +103,7 @@ jobs:
               "var-cache-apt": "/var/cache/apt",
               "var-lib-apt": "/var/lib/apt",
               "root-npm": "/root/.npm",
-              "user-cache-pip": "/home/user/.cache/pip"
+              "user-cache-uv": "/home/user/.cache/uv"
             }
           skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 

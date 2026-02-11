@@ -45,7 +45,7 @@ services:
 
   web:
     image: pbaabp:docker-compose
-    command: python manage.py runserver 0.0.0.0:8000
+    command: uv run python manage.py runserver 0.0.0.0:8000
     environment: *base_environment
     volumes:
       - *base_volumes
@@ -70,7 +70,7 @@ services:
 
   worker:
     image: pbaabp:docker-compose
-    command: hupper -m celery -A pbaabp worker --beat -l DEBUG
+    command: uv run hupper -m celery -A pbaabp worker --beat -l DEBUG
     environment: *base_environment
     volumes:
       - *base_volumes

@@ -15,7 +15,7 @@ COPY ./lazer_app/projectLazer/ /code/
 RUN npx ionic build --prod
 
 
-FROM python:3.13-bullseye
+FROM ghcr.io/astral-sh/uv:python3.13-trixie
 
 RUN set -eux; \
     rm -f /etc/apt/apt.conf.d/docker-clean; \
@@ -29,12 +29,10 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 RUN mkdir /code
 WORKDIR /code
-COPY requirements /code/requirements
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements/base.txt
-
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements/deploy.txt
+COPY pyproject.toml /code/pyproject.toml
+COPY uv.lock /code/uv.lock
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --group deploy
 
 COPY .ssh /root/.ssh
 COPY . /code/
@@ -47,4 +45,4 @@ RUN \
     RECAPTCHA_PRIVATE_KEY=None \
     RECAPTCHA_PUBLIC_KEY=None \
     DJANGO_SETTINGS_MODULE=pbaabp.settings \
-    python manage.py collectstatic --noinput
+    uv run python manage.py collectstatic --noinput
