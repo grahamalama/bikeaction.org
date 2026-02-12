@@ -55,13 +55,12 @@ migrate: .state/docker-build-base
 	docker compose run --rm web uv run python manage.py migrate $(filter-out $@,$(MAKECMDGOALS))
 
 lint: .state/docker-build-base
-	docker compose run --rm base uv run python -m isort --check-only .
-	docker compose run --rm base uv run python -m black --check .
-	docker compose run --rm base uv run python -m flake8
+	docker compose run --rm base uv run python -m ruff check .
+	docker compose run --rm base uv run python -m ruff format --check .
 
 reformat: .state/docker-build-base
-	docker compose run --rm base uv run python -m isort .
-	docker compose run --rm base uv run python -m black .
+	docker compose run --rm base uv run python -m ruff check --fix .
+	docker compose run --rm base uv run python -m ruff format .
 
 test: .state/docker-build-base
 	docker compose run --rm web uv run python manage.py test --keepdb $(filter-out $@,$(MAKECMDGOALS))

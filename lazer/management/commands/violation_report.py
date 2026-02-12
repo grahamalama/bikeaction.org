@@ -10,9 +10,7 @@ from lazer.models import ViolationReport
 
 
 class Command(BaseCommand):
-    help = (
-        "Generate a report of violations within a GeoJSON polygon, comparing before/after a date"
-    )
+    help = "Generate a report of violations within a GeoJSON polygon, comparing before/after a date"
 
     def generate_html_report(
         self,
@@ -421,12 +419,19 @@ class Command(BaseCommand):
                     </tr>
                 </thead>
                 <tbody>
-                    {''.join([f'''<tr>
-                            <td>{v['datetime']}</td>
-                            <td>{v['location']}</td>
-                            <td>{v['type']}</td>
-                            <td class="period-{v['period']}">{v['period'].upper()}</td>
-                        </tr>''' for v in violation_list])}
+                    {
+            "".join(
+                [
+                    f'''<tr>
+                            <td>{v["datetime"]}</td>
+                            <td>{v["location"]}</td>
+                            <td>{v["type"]}</td>
+                            <td class="period-{v["period"]}">{v["period"].upper()}</td>
+                        </tr>'''
+                    for v in violation_list
+                ]
+            )
+        }
                 </tbody>
             </table>
         </div>
@@ -718,9 +723,7 @@ class Command(BaseCommand):
                     for v in violations_in_area:
                         try:
                             # Extract first number from block_number
-                            block_num = int(
-                                "".join(filter(str.isdigit, v.block_number.split()[0]))
-                            )
+                            block_num = int("".join(filter(str.isdigit, v.block_number.split()[0])))
                             if min_block <= block_num <= max_block:
                                 filtered_violations.append(v.id)
                         except (ValueError, AttributeError, IndexError):

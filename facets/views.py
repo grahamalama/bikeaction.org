@@ -44,8 +44,7 @@ async def query_address(request):
 
     if address is None:
         error = (
-            f"Failed to find address ({submission}) "
-            "be sure to include your entire street address"
+            f"Failed to find address ({submission}) be sure to include your entire street address"
         )
         return HttpResponse(f'<p style="color: red;">{error}</p>')
 
