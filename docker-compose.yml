@@ -29,7 +29,7 @@ services:
   base:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      target: dev
     image: pbaabp:docker-compose
     environment: &base_environment
       DEBUG: "True"
@@ -61,8 +61,7 @@ services:
   lazer:
     build:
       context: .
-      dockerfile: Dockerfile.dev
-      target: lazer
+      target: lazer-dev
     command: npx ionic build --baseHref='/laser' --prod --watch
     volumes:
       - *base_volumes

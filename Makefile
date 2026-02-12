@@ -9,7 +9,7 @@ default:
 	@echo
 	@exit 1
 
-.state/docker-build-base: Dockerfile.dev uv.lock lazer_app/projectLazer/package-lock.json
+.state/docker-build-base: Dockerfile uv.lock lazer_app/projectLazer/package-lock.json
 	# Build our base container for this project.
 	docker compose build --build-arg USER_ID=$(shell id -u) --build-arg GROUP_ID=$(shell id -g) --force-rm base
 
