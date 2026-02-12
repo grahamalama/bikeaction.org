@@ -27,7 +27,7 @@ jobs:
               var-lib-apt
               root-npm
               user-cache-uv
-          key: ${{ runner.os }}-cache-mount-${{ hashFiles('Dockerfile.dev') }}
+          key: ${{ runner.os }}-cache-mount-${{ hashFiles('Dockerfile') }}
           restore-keys: |
             ${{ runner.os }}-cache-mount-
 
@@ -51,7 +51,8 @@ jobs:
           BUILDKIT_PROGRESS: plain
         with:
           context: .
-          file: Dockerfile.dev
+          file: Dockerfile
+          target: dev
           push: false
           load: true
           tags: pbaabp:docker-compose
@@ -89,7 +90,7 @@ jobs:
               var-lib-apt
               root-npm
               user-cache-uv
-          key: ${{ runner.os }}-cache-mount-${{ hashFiles('Dockerfile.dev') }}
+          key: ${{ runner.os }}-cache-mount-${{ hashFiles('Dockerfile') }}
           restore-keys: |
             ${{ runner.os }}-cache-mount-
 
@@ -126,7 +127,8 @@ jobs:
           BUILDKIT_PROGRESS: plain
         with:
           context: .
-          file: Dockerfile.dev
+          file: Dockerfile
+          target: dev
           push: false
           load: true
           tags: pbaabp:docker-compose
