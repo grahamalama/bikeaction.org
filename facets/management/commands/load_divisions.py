@@ -4,11 +4,11 @@ import pathlib
 from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
 from django.core.management.base import BaseCommand
 
-from facets.models import Ward
+from facets.models import Division, Ward
 
 
 class Command(BaseCommand):
-    help = "Load or update Wards from GeoJSON"
+    help = "Load or update Political Divisions from GeoJSON"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -19,14 +19,14 @@ class Command(BaseCommand):
         parser.add_argument(
             "--delete-stale",
             action="store_true",
-            help="Delete Wards not present in the GeoJSON file",
+            help="Delete Divisions not present in the GeoJSON file",
         )
 
     def handle(self, *args, **options):
         dry_run = options["dry_run"]
         delete_stale = options["delete_stale"]
         geojson_path = (
-            pathlib.Path(__file__).parent.parent.parent / "data" / "Political_Wards.geojson"
+            pathlib.Path(__file__).parent.parent.parent / "data" / "Political_Divisions.geojson"
         )
 
         with open(geojson_path) as f:
@@ -35,17 +35,31 @@ class Command(BaseCommand):
         if dry_run:
             self.stdout.write(self.style.WARNING("DRY RUN - no changes will be made"))
 
+        wards = {int(w.properties.get("ward_num")): w for w in Ward.objects.all()}
+        if not wards and not dry_run:
+            self.stdout.write(self.style.ERROR("No Wards found. Run load_wards first."))
+            return
+
         created_count = 0
         updated_count = 0
         file_names = set()
 
         for feature in data["features"]:
             props = feature["properties"]
-            ward_num = int(props["ward_num"])
-            name = f"Political Ward {ward_num}"
+            division_num = props["DIVISION_NUM"]
+            ward_num = division_num[:2]
+            div_num = division_num[2:]
+            name = f"Ward {int(ward_num)} Division {int(div_num)}"
             file_names.add(name)
 
-            existing = Ward.objects.filter(name=name).first()
+            ward = wards.get(int(ward_num))
+            if not ward and not dry_run:
+                self.stdout.write(
+                    self.style.WARNING(f"No ward found for ward_num={ward_num}, skipping {name}")
+                )
+                continue
+
+            existing = Division.objects.filter(name=name).first()
 
             if dry_run:
                 action = "Would update" if existing else "Would create"
@@ -53,7 +67,7 @@ class Command(BaseCommand):
                     updated_count += 1
                 else:
                     created_count += 1
-                self.stdout.write(f"{action} {name}")
+                self.stdout.write(f"{action} {name} (Political Ward {int(ward_num)})")
                 continue
 
             geojson = json.dumps(feature["geometry"])
@@ -62,11 +76,12 @@ class Command(BaseCommand):
             if geos_geom.geom_type == "Polygon":
                 geos_geom = MultiPolygon(geos_geom)
 
-            ward, created = Ward.objects.update_or_create(
+            division, created = Division.objects.update_or_create(
                 name=name,
                 defaults={
                     "mpoly": geos_geom,
                     "properties": props,
+                    "ward": ward,
                 },
             )
 
@@ -76,16 +91,16 @@ class Command(BaseCommand):
                 updated_count += 1
 
             action = "Created" if created else "Updated"
-            self.stdout.write(f"{action} {ward.name}")
+            self.stdout.write(f"{action} {division.name}")
 
         deleted_count = 0
         if delete_stale:
-            stale = Ward.objects.exclude(name__in=file_names)
-            for ward in stale:
+            stale = Division.objects.exclude(name__in=file_names)
+            for division in stale:
                 if dry_run:
-                    self.stdout.write(f"Would delete {ward.name}")
+                    self.stdout.write(f"Would delete {division.name}")
                 else:
-                    self.stdout.write(f"Deleted {ward.name}")
+                    self.stdout.write(f"Deleted {division.name}")
                 deleted_count += 1
             if not dry_run:
                 stale.delete()

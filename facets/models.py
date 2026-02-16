@@ -75,4 +75,14 @@ class StateSenateDistrict(Facet):
 
 
 class Ward(Facet):
-    pass
+    class Meta:
+        verbose_name = "Political Ward"
+        verbose_name_plural = "Political Wards"
+
+
+class Division(Facet):
+    ward = models.ForeignKey(Ward, on_delete=models.CASCADE, related_name="divisions", null=True)
+
+    class Meta:
+        verbose_name = "Political Division"
+        verbose_name_plural = "Political Divisions"
