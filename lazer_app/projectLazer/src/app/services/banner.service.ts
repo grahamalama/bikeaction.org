@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Platform } from '@ionic/angular';
 
 export interface Banner {
@@ -10,6 +10,8 @@ export interface Banner {
   providedIn: 'root',
 })
 export class BannerService {
+  private platform = inject(Platform);
+
   banner: Banner | null = null;
   urlRoot: string = '';
 
@@ -39,7 +41,9 @@ export class BannerService {
     }
   }
 
-  constructor(private platform: Platform) {
+  constructor() {
+    const platform = this.platform;
+
     if (platform.is('hybrid')) {
       this.urlRoot = 'https://bikeaction.org';
     }

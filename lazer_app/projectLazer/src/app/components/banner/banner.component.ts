@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { BannerService } from '../../services/banner.service';
 
@@ -10,7 +10,8 @@ import { BannerService } from '../../services/banner.service';
   imports: [],
 })
 export class BannerComponent implements OnInit {
-  constructor(public bannerService: BannerService) {}
+  bannerService = inject(BannerService);
+
 
   ngOnInit() {
     this.bannerService.fetchBanner();

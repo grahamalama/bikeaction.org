@@ -1,4 +1,4 @@
-import { Injectable, NgZone, OnDestroy } from '@angular/core';
+import { Injectable, NgZone, OnDestroy, inject } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { Subscription, interval } from 'rxjs';
 import { LocationStrategy } from '@angular/common';
@@ -7,16 +7,16 @@ import { LocationStrategy } from '@angular/common';
   providedIn: 'root',
 })
 export class UpdateService implements OnDestroy {
+  private swUpdate = inject(SwUpdate);
+  private zone = inject(NgZone);
+  private locationStrategy = inject(LocationStrategy);
+
   needsUpdate: boolean = false;
   isNewVersionAvailable: boolean = false;
   intervalSource = interval(15 * 60 * 1000); // every 15 mins
   intervalSubscription?: Subscription;
 
-  constructor(
-    private swUpdate: SwUpdate,
-    private zone: NgZone,
-    private locationStrategy: LocationStrategy,
-  ) {
+  constructor() {
     this.checkForUpdate();
   }
 

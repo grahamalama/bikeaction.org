@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 import { get_options } from '../violation-matcher/violation-matcher';
@@ -30,10 +30,10 @@ const iconMap = new Map([
   standalone: false,
 })
 export class ChooseViolationModalComponent {
+  private modalCtrl = inject(ModalController);
+
   selection!: string;
   violations: string[] = get_options('Violation Observed') as string[];
-
-  constructor(private modalCtrl: ModalController) {}
 
   renderViolationText(violation: string): string {
     if (violation.split('(').length > 1) {

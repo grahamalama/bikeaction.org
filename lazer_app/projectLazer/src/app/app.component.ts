@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { Platform } from '@ionic/angular'; // Import Platform
 import { Router } from '@angular/router';
@@ -17,6 +17,14 @@ import { AccountService } from './services/account.service';
   standalone: false,
 })
 export class AppComponent implements OnInit {
+  private platform = inject(Platform);
+  private storage = inject(Storage);
+  private router = inject(Router);
+  onlineStatus = inject(OnlineStatusService);
+  updateService = inject(UpdateService);
+  versionService = inject(VersionService);
+  accountService = inject(AccountService);
+
   private xDown: number | null = null;
   private yDown: number | null = null;
 
@@ -74,15 +82,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  constructor(
-    private platform: Platform,
-    private storage: Storage,
-    private router: Router,
-    public onlineStatus: OnlineStatusService,
-    public updateService: UpdateService,
-    public versionService: VersionService,
-    public accountService: AccountService,
-  ) {
+  constructor() {
     this.storage.create();
     document.addEventListener('touchstart', this.handleTouchStart, {
       passive: false,

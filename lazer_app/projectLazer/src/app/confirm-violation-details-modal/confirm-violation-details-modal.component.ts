@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
 import {
   AlertController,
   LoadingController,
@@ -48,6 +48,17 @@ function mapToUrlParams(map: any) {
   standalone: false,
 })
 export class ConfirmViolationDetailsModalComponent implements OnInit {
+  private alertController = inject(AlertController);
+  private modalCtrl = inject(ModalController);
+  private loadingCtrl = inject(LoadingController);
+  private toastController = inject(ToastController);
+  private router = inject(Router);
+  private photos = inject(PhotoService);
+  private storage = inject(Storage);
+  onlineStatus = inject(OnlineStatusService);
+  private accountService = inject(AccountService);
+  private platform = inject(Platform);
+
   rootUrl: string = '';
 
   make!: string;
@@ -75,19 +86,6 @@ export class ConfirmViolationDetailsModalComponent implements OnInit {
 
   @Input() violation: any;
   @Input() form: any;
-
-  constructor(
-    private alertController: AlertController,
-    private modalCtrl: ModalController,
-    private loadingCtrl: LoadingController,
-    private toastController: ToastController,
-    private router: Router,
-    private photos: PhotoService,
-    private storage: Storage,
-    public onlineStatus: OnlineStatusService,
-    private accountService: AccountService,
-    private platform: Platform,
-  ) {}
 
   async presentReallySubmit() {
     const alert = await this.alertController.create({

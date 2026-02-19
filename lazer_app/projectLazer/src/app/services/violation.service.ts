@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Photo } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Filesystem } from '@capacitor/filesystem';
@@ -11,10 +11,9 @@ import { PhotoService } from './photo.service';
   providedIn: 'root',
 })
 export class ViolationService {
-  constructor(
-    private photos: PhotoService,
-    private storage: Storage,
-  ) {}
+  private photos = inject(PhotoService);
+  private storage = inject(Storage);
+
 
   sortViolations(): Promise<any[]> {
     return this.history().then((history) => {

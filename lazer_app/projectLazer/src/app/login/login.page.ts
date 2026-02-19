@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
@@ -19,17 +19,15 @@ interface UserOptions {
   standalone: false,
 })
 export class LoginPage implements OnInit {
+  accountService = inject(AccountService);
+  onlineStatus = inject(OnlineStatusService);
+  updateService = inject(UpdateService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   login: UserOptions = { username: '', password: '' };
   submitted: boolean = false;
   next: any = null;
-
-  constructor(
-    public accountService: AccountService,
-    public onlineStatus: OnlineStatusService,
-    public updateService: UpdateService,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {}
 
   async onLogin(form: NgForm) {
     this.submitted = true;

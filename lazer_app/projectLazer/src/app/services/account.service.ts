@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { ToastController } from '@ionic/angular';
@@ -8,6 +8,10 @@ import { Preferences } from '@capacitor/preferences';
   providedIn: 'root',
 })
 export class AccountService {
+  private storage = inject(Storage);
+  private toastController = inject(ToastController);
+  private platform = inject(Platform);
+
   username: string | null = null;
   loggedIn: boolean = false;
   urlRoot: string = '';
@@ -195,11 +199,9 @@ export class AccountService {
     await this.storage.set('wrappedDismissed', true);
   }
 
-  constructor(
-    private storage: Storage,
-    private toastController: ToastController,
-    private platform: Platform,
-  ) {
+  constructor() {
+    const platform = this.platform;
+
     if (platform.is('hybrid')) {
       this.urlRoot = 'https://bikeaction.org';
     }

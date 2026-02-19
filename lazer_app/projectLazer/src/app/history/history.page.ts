@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, inject } from '@angular/core';
 
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Storage } from '@ionic/storage-angular';
@@ -15,16 +15,14 @@ import { ViolationService } from '../services/violation.service';
   standalone: false,
 })
 export class HistoryPage {
-  violationHistory: any[] = [];
+  onlineStatus = inject(OnlineStatusService);
+  private storage = inject(Storage);
+  private violations = inject(ViolationService);
+  photos = inject(PhotoService);
+  changeDetectorRef = inject(ChangeDetectorRef);
+  updateService = inject(UpdateService);
 
-  constructor(
-    public onlineStatus: OnlineStatusService,
-    private storage: Storage,
-    private violations: ViolationService,
-    public photos: PhotoService,
-    public changeDetectorRef: ChangeDetectorRef,
-    public updateService: UpdateService,
-  ) {}
+  violationHistory: any[] = [];
 
   async renderPhoto(filename: string): Promise<UserPhoto> {
     return await this.photos.fetchPicture(filename);

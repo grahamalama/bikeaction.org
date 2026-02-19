@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { OnlineStatusService } from '../services/online.service';
 import { UpdateService } from '../services/update.service';
@@ -11,9 +11,7 @@ import { AccountService } from '../services/account.service';
   standalone: false,
 })
 export class AccountPage {
-  constructor(
-    public accountService: AccountService,
-    public onlineStatus: OnlineStatusService,
-    public updateService: UpdateService,
-  ) {}
+  accountService = inject(AccountService);
+  onlineStatus = inject(OnlineStatusService);
+  updateService = inject(UpdateService);
 }

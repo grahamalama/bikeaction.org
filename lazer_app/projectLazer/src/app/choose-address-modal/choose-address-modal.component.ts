@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -8,12 +8,12 @@ import { ModalController } from '@ionic/angular';
   standalone: false,
 })
 export class ChooseAddressModalComponent implements OnInit {
+  private modalCtrl = inject(ModalController);
+
   selection!: string;
   addresses!: string[];
 
   @Input() violation: any;
-
-  constructor(private modalCtrl: ModalController) {}
 
   setAddress(address: string) {
     this.selection = address;

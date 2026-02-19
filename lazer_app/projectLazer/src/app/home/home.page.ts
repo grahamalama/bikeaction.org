@@ -1,6 +1,6 @@
 import { Capacitor } from '@capacitor/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { Platform } from '@ionic/angular'; // Import Platform
@@ -25,6 +25,17 @@ import { AccountService } from '../services/account.service';
   standalone: false,
 })
 export class HomePage implements OnInit {
+  private loadingCtrl = inject(LoadingController);
+  private toastController = inject(ToastController);
+  private router = inject(Router);
+  onlineStatus = inject(OnlineStatusService);
+  updateService = inject(UpdateService);
+  private photos = inject(PhotoService);
+  private storage = inject(Storage);
+  private violations = inject(ViolationService);
+  platform = inject(Platform);
+  accountService = inject(AccountService);
+
   deviceInfo: DeviceInfo | null = null;
 
   geoPerms: boolean | null = null;
@@ -38,19 +49,6 @@ export class HomePage implements OnInit {
   violationTime: Date | null = null;
 
   submittedViolationsCount: number = 0;
-
-  constructor(
-    private loadingCtrl: LoadingController,
-    private toastController: ToastController,
-    private router: Router,
-    public onlineStatus: OnlineStatusService,
-    public updateService: UpdateService,
-    private photos: PhotoService,
-    private storage: Storage,
-    private violations: ViolationService,
-    public platform: Platform,
-    public accountService: AccountService,
-  ) {}
 
   async toggleOpenToCapture() {
     await Preferences.set({

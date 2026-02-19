@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Storage } from '@ionic/storage-angular';
 import { Platform } from '@ionic/angular';
@@ -24,24 +24,22 @@ import { best_match } from '../violation-matcher/violation-matcher';
   standalone: false,
 })
 export class ViolationDetailPage implements OnInit {
+  route = inject(ActivatedRoute);
+  private loadingCtrl = inject(LoadingController);
+  changeDetectorRef = inject(ChangeDetectorRef);
+  private modalCtrl = inject(ModalController);
+  private storage = inject(Storage);
+  photos = inject(PhotoService);
+  onlineStatus = inject(OnlineStatusService);
+  updateService = inject(UpdateService);
+  accountService = inject(AccountService);
+  private platform = inject(Platform);
+
   violationId: number | null = null;
   violationData: any = null;
   violationImageLoaded: boolean = false;
   location: string | null = null;
   rootUrl: string = '';
-
-  constructor(
-    public route: ActivatedRoute,
-    private loadingCtrl: LoadingController,
-    public changeDetectorRef: ChangeDetectorRef,
-    private modalCtrl: ModalController,
-    private storage: Storage,
-    public photos: PhotoService,
-    public onlineStatus: OnlineStatusService,
-    public updateService: UpdateService,
-    public accountService: AccountService,
-    private platform: Platform,
-  ) {}
 
   async selectVehicle(index: number) {
     this.violationData.vehicle = this.violationData.raw.vehicles[index];

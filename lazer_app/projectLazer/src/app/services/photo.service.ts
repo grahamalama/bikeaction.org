@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Photo } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Filesystem } from '@capacitor/filesystem';
@@ -9,13 +9,11 @@ import { Storage } from '@ionic/storage-angular';
   providedIn: 'root',
 })
 export class PhotoService {
+  private platform = inject(Platform);
+  private storage = inject(Storage);
+
   public photos: UserPhoto[] = [];
   private PHOTO_STORAGE: string = 'photos';
-
-  constructor(
-    private platform: Platform,
-    private storage: Storage,
-  ) {}
 
   // Save picture to file on device
   public async savePicture(photo: Photo) {
