@@ -32,19 +32,25 @@
 
 <ion-content [fullscreen]="true">
   <ion-grid class="ion-padding">
-    <ion-row *ngIf="accountService.loggedIn">
-      <ion-col>Logged in as</ion-col>
-      <ion-col>{{ accountService.username }}</ion-col>
-    </ion-row>
-    <ion-row *ngIf="accountService.loggedIn">
-      <ion-col colspan="2">
-        <ion-button (click)="accountService.logOut()">Log Out</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="!accountService.loggedIn">
-      <ion-col colspan="2">
-        <ion-button [routerLink]="['/login']">Log In</ion-button>
-      </ion-col>
-    </ion-row>
+    @if (accountService.loggedIn) {
+      <ion-row>
+        <ion-col>Logged in as</ion-col>
+        <ion-col>{{ accountService.username }}</ion-col>
+      </ion-row>
+    }
+    @if (accountService.loggedIn) {
+      <ion-row>
+        <ion-col colspan="2">
+          <ion-button (click)="accountService.logOut()">Log Out</ion-button>
+        </ion-col>
+      </ion-row>
+    }
+    @if (!accountService.loggedIn) {
+      <ion-row>
+        <ion-col colspan="2">
+          <ion-button [routerLink]="['/login']">Log In</ion-button>
+        </ion-col>
+      </ion-row>
+    }
   </ion-grid>
 </ion-content>

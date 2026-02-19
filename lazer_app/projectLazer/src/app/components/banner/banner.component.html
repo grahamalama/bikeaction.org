@@ -1,8 +1,9 @@
-<div
-  *ngIf="bannerService.banner"
-  class="banner"
-  [class.banner-pink]="bannerService.banner.color === 'pink'"
-  [class.banner-green]="bannerService.banner.color === 'green'"
->
-  <div class="banner-content" [innerHTML]="bannerService.banner.content_html"></div>
-</div>
+@if (bannerService.banner) {
+  <div
+    class="banner"
+    [class.banner-pink]="bannerService.banner.color === 'pink'"
+    [class.banner-green]="bannerService.banner.color === 'green'"
+    >
+    <div class="banner-content" [innerHTML]="bannerService.banner.content_html"></div>
+  </div>
+}
