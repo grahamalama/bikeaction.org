@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { IonicModule } from '@ionic/angular';
-import { IonicStorageModule } from '@ionic/storage-angular';
+import { IonicStorageModule, Storage } from '@ionic/storage-angular';
 import { HistoryPage } from './history.page';
 
 describe('HistoryPage', () => {
@@ -17,6 +17,9 @@ describe('HistoryPage', () => {
         ServiceWorkerModule.register('', { enabled: false }),
       ],
     }).compileComponents();
+
+    const storage = TestBed.inject(Storage);
+    await storage.create();
 
     fixture = TestBed.createComponent(HistoryPage);
     component = fixture.componentInstance;

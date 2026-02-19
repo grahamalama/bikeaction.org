@@ -1,7 +1,9 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { IonicModule } from '@ionic/angular';
-import { IonicStorageModule } from '@ionic/storage-angular';
+import { IonicStorageModule, Storage } from '@ionic/storage-angular';
 
 import { HomePage } from './home.page';
 
@@ -13,11 +15,16 @@ describe('HomePage', () => {
     await TestBed.configureTestingModule({
       declarations: [HomePage],
       imports: [
+        FormsModule,
         IonicModule.forRoot(),
         IonicStorageModule.forRoot(),
         ServiceWorkerModule.register('', { enabled: false }),
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
+
+    const storage = TestBed.inject(Storage);
+    await storage.create();
 
     fixture = TestBed.createComponent(HomePage);
     component = fixture.componentInstance;
