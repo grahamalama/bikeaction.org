@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     "django.contrib.gis",
     # Wagtail
     "wagtail_localize",
-    "wagtail_localize_git",
     "wagtail_localize.locales",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
