@@ -9,7 +9,7 @@ default:
 	@echo
 	@exit 1
 
-.state/docker-build-base: Dockerfile uv.lock lazer_app/projectLazer/package-lock.json
+.state/docker-build-base: Dockerfile uv.lock
 	# Build our base container for this project.
 	docker compose build --build-arg USER_ID=$(shell id -u) --build-arg GROUP_ID=$(shell id -g) --force-rm base
 
@@ -19,6 +19,14 @@ default:
 	# Mark the state so we don't rebuild this needlessly.
 	mkdir -p .state
 	touch .state/docker-build-base
+
+.state/docker-build-lazer: Dockerfile lazer_app/projectLazer/package-lock.json
+	# Build our base container for this project.
+	docker compose build --build-arg USER_ID=$(shell id -u) --build-arg GROUP_ID=$(shell id -g) --force-rm lazer
+
+        # Mark the state so we don't rebuild this needlessly.
+	mkdir -p .state
+	touch .state/docker-build-lazer
 
 .state/db-migrated:
 	make migrate
@@ -30,7 +38,7 @@ default:
 	mkdir -p .state
 	touch .state/db-initialized
 
-serve: .state/db-initialized
+serve: .state/db-initialized .state/docker-build-lazer
 	docker compose up --remove-orphans -d
 
 stop:
