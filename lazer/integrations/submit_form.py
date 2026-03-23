@@ -50,6 +50,53 @@ class FinderEnum(StrEnum):
         return cls.unknown_value()
 
 
+class VehicleMake(FinderEnum):
+    ACURA = "Acura"
+    AUDI = "Audi"
+    BMW = "BMW"
+    BUICK = "Buick"
+    CADILLAC = "Cadillac"
+    CHEVROLET = "Chevrolet"
+    CHRYSLER = "Chrysler"
+    DODGE = "Dodge"
+    FORD = "Ford"
+    GENESIS = "Genesis"
+    GMC = "GMC"
+    HARLEY_DAVIDSON = "Harley Davidson"
+    HONDA = "Honda"
+    HUMMER = "Hummer"
+    HYUNDAI = "Hyundai"
+    INFINITI = "Infiniti"
+    JEEP = "Jeep"
+    KIA = "KIA"
+    LEXUS = "Lexus"
+    LINCOLN = "Lincoln"
+    MAZDA = "Mazda"
+    MERCEDES = "Mercedes"
+    MERCURY = "Mercury"
+    MINI_COOPER = "Mini Cooper"
+    MITSUBISHI = "Mitsubishi"
+    NISSAN = "Nissan"
+    PONTIAC = "Pontiac"
+    RAM = "Ram"
+    RIVIAN = "Rivian"
+    SAAB = "Saab"
+    SUBARU = "Subaru"
+    SUZUKI = "Suzuki"
+    TESLA = "Tesla"
+    TOYOTA = "Toyota"
+    VOLKSWAGEN = "Volkswagen"
+    VOLVO = "Volvo"
+    CONSTRUCTION_EQUIPMENT = "Construction Equipment"
+    MULTIPLE_VEHICLES = "Multiple Vehicles"
+    OFF_ROAD_VEHICLE = "Off Road Vehicle"
+    UNKNOWN = "Unknown"
+
+    @classmethod
+    def unknown_value(cls) -> "VehicleMake":
+        return cls.UNKNOWN
+
+
 class ViolationObserved(FinderEnum):
     BIKE_LANE = "Bike Lane (vehicle parked in bike lane)"
     CORNER_CLEARANCE = "Corner Clearance (vehicle parked on corner)"
@@ -76,31 +123,31 @@ class OccurrenceFrequency(FinderEnum):
 
 
 class VehicleType(FinderEnum):
-    COUPE = "Coupe (2 door car)"
     SEDAN = "Sedan (4 door car)"
+    COUPE = "Coupe (2 door car)"
     SUV = "SUV"
     MINIVAN = "Minivan"
     VAN = "Van"
     PICKUP_TRUCK = "Pickup Truck"
     BOX_TRUCK = "Box-Truck"
-    BUS = "Bus"
-    BOAT = "Boat"
-    RV = "RV"
-    MOTORCYCLE = "Motorcycle"
-    ATV = "ATV"
-    TRACTOR = "Tractor"
-    TRAILER = "Trailer"
-    CAMPER = "Camper"
-    CONSTRUCTION_EQUIPMENT = "Construction Equipment"
     FLATBED = "Flatbed"
-    TOW_TRUCK = "Tow-Truck"
+    BUS = "Bus"
+    RV = "RV"
+    CAMPER = "Camper"
+    TRAILER = "Trailer"
+    BOAT = "Boat"
+    MOTORCYCLE = "Motorcycle"
+    CONSTRUCTION_EQUIPMENT = "Construction Equipment"
     UNKNOWN = "Unknown"
 
     @classmethod
     def get_legacy_mappings(cls) -> dict[str, str]:
-        """Legacy mappings from old Smartsheet form to new PowerApps form."""
+        """Legacy mappings from old forms to current philapark.org form."""
         return {
-            "Dirt Bike": "Motorcycle",  # Old form had "Dirt Bike", map to closest equivalent
+            "Dirt Bike": "Motorcycle",
+            "ATV": "Motorcycle",
+            "Tractor": "Construction Equipment",
+            "Tow-Truck": "Box-Truck",
         }
 
     @classmethod
@@ -118,34 +165,35 @@ class VehicleColor(FinderEnum):
     GRAY = "Gray"
     GREEN = "Green"
     MAROON = "Maroon"
-    OTHER = "Other"
-    PINK = "Pink"
+    ORANGE = "Orange"
     PURPLE = "Purple"
     RED = "Red"
     SILVER = "Silver"
     TEAL = "Teal"
     WHITE = "White"
+    YELLOW = "Yellow"
+    UNKNOWN = "Unknown"
 
     @classmethod
     def get_legacy_mappings(cls) -> dict[str, str]:
-        """Legacy mappings from old Smartsheet form to new PowerApps form."""
+        """Legacy mappings from old forms to current philapark.org form."""
         return {
-            "Yellow": "Gold",  # Closest color match
-            "Orange": "Red",  # Map to closest available color
-            "Magenta": "Pink",  # Magenta is similar to pink
-            "Violet": "Purple",  # Violet is a shade of purple
-            "Cyan": "Teal",  # Cyan and teal are in the same color family
+            "Pink": "Red",
+            "Magenta": "Red",
+            "Violet": "Purple",
+            "Cyan": "Teal",
+            "Other": "Unknown",
         }
 
     @classmethod
     def unknown_value(cls) -> "VehicleColor":
         """Returns a default value for unknown vehicle colors."""
-        return cls.OTHER
+        return cls.UNKNOWN
 
 
 @dataclass
 class MobilityAccessViolation:
-    make: str
+    make: VehicleMake | str
     body_style: VehicleType | str
     vehicle_color: VehicleColor | str
 
@@ -194,6 +242,7 @@ class MobilityAccessViolation:
 
         # ensure all enum fields are of the correct type
         fields: list[str, FinderEnum] = [
+            ("make", VehicleMake),
             ("body_style", VehicleType),
             ("vehicle_color", VehicleColor),
             ("violation_observed", ViolationObserved),
