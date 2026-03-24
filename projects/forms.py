@@ -86,6 +86,16 @@ class ProjectApplicationForm(forms.Form):
         required=False,
     )
 
+    # scope
+    potential_broader_campaign = forms.CharField(
+        label=(
+            "If you expect this project to lead into a broader campaign, "
+            "please specify possible next steps:"
+        ),
+        widget=forms.Textarea(attrs={"rows": 3}),
+        required=False,
+    )
+
     # resources
     equipment_needed = forms.CharField(
         label="Describe equipment needed (tables, banners, trailers, etc.)",
