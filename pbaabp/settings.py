@@ -46,6 +46,8 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost"])
 CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=["http://localhost"])
 SITE_URL = env("DJANGO_SITE_URL", default="http://localhost:8000")
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 CORS_URLS_REGEX = r"^/lazer/.*$"
 CORS_ALLOW_ALL_ORIGINS = True
 
