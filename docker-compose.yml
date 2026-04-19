@@ -7,6 +7,7 @@ services:
     build:
       context: compose
       dockerfile: Dockerfile.postgis
+    pull_policy: build
     ports:
       - "5433:5432"
     environment:
@@ -31,6 +32,7 @@ services:
       context: .
       target: dev
     image: pbaabp:docker-compose
+    pull_policy: build
     environment: &base_environment
       DEBUG: "True"
       DATABASE_URL: postgresql://pbaabp:pbaabp@postgres:5432/pbaabp
@@ -45,6 +47,7 @@ services:
 
   web:
     image: pbaabp:docker-compose
+    pull_policy: never
     command: uv run python manage.py runserver 0.0.0.0:8000
     environment: *base_environment
     volumes:
@@ -69,6 +72,7 @@ services:
 
   worker:
     image: pbaabp:docker-compose
+    pull_policy: never
     command: uv run hupper -m celery -A pbaabp worker --beat -l DEBUG
     environment: *base_environment
     volumes:
@@ -81,6 +85,7 @@ services:
 
   discord:
     image: pbaabp:docker-compose
+    pull_policy: never
     command: python manage.py run_dev_discord
     environment: *base_environment
     volumes:
