@@ -57,6 +57,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
+      base:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
       postgres:
@@ -79,6 +81,8 @@ services:
     volumes:
       - *base_volumes
     depends_on:
+      base:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
       postgres:
@@ -93,6 +97,8 @@ services:
       - *base_volumes
     stop_signal: SIGINT
     depends_on:
+      base:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
       postgres:
