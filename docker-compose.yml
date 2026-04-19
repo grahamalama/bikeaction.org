@@ -33,6 +33,7 @@ services:
       target: dev
     image: pbaabp:docker-compose
     pull_policy: build
+    command: ["bash", "-c", "exit 0"]
     environment: &base_environment
       DEBUG: "True"
       DATABASE_URL: postgresql://pbaabp:pbaabp@postgres:5432/pbaabp
