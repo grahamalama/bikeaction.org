@@ -5,7 +5,7 @@ from pbaabp.forms import validate_is_checked
 
 
 def validate_coc_email_value(value):
-    if value.lower().strip() != "governance@bikeaction.org":
+    if value.lower().strip() != "conduct@bikeaction.org":
         raise ValidationError("Hmmmm, that's not quite right.")
 
 
