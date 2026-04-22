@@ -822,6 +822,25 @@ class ProfileAdmin(ReadOnlyLeafletGeoAdminMixin, admin.ModelAdmin):
             {"fields": ["email_activity_sparkline", "email_history"]},
         ),
     ]
+    add_fieldsets = [
+        (
+            "Demographics",
+            {"fields": ["user", "street_address", "zip_code"]},
+        ),
+        (
+            "Preferences",
+            {"fields": ["newsletter_opt_in"]},
+        ),
+        (
+            "Internal",
+            {"fields": ["mailjet_contact_id"]},
+        ),
+    ]
+
+    def get_fieldsets(self, request, obj=None):
+        if obj is None:
+            return self.add_fieldsets
+        return super().get_fieldsets(request, obj)
 
     def save_model(self, request, obj, form, change):
         if change:
