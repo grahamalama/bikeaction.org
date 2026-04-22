@@ -38,9 +38,14 @@ class ProjectApplicationForm(forms.Form):
 
     # high level
     mission_relevance = forms.CharField(
-        label=(
+        label="Project Overview",
+        help_text=(
             "How does this project advance PBA's mission "
-            "to improve the bicycle infrastructure of Philadelphia?"
+            "to improve the bicycle infrastructure of Philadelphia?<br><br>"
+            "Describe how this project supports PBA initiatives around diversity, "
+            "equity, and inclusion (if applicable). For example, is this project in an "
+            "underrepresented district or neighborhood (districts 6-10; Strawberry Mansion "
+            "i.e.) or build relationships with new or diverse groups?"
         ),
         widget=forms.Textarea(attrs={"rows": 3}),
         required=True,
@@ -57,7 +62,7 @@ class ProjectApplicationForm(forms.Form):
     )
     recruitment = forms.CharField(
         label=(
-            "Have you already recruited anyone in PBA to help you with this project?If so, who?"
+            "Have you already recruited anyone in PBA to help you with this project? If so, who?"
         ),
         widget=forms.Textarea(attrs={"rows": 3}),
         required=True,
@@ -84,6 +89,9 @@ class ProjectApplicationForm(forms.Form):
         label="Location (if applicable)",
         max_length=256,
         required=False,
+    )
+    location_wheelchair_accessible = forms.NullBooleanField(
+        label="Location Wheelchair Accessible?",
     )
 
     # scope

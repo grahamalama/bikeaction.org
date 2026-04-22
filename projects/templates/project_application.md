@@ -62,6 +62,11 @@
 {% if application.data.location.value %}{{ application.data.location.value|bleach }}{% else %}no response{% endif %}
 ```
 
+**{{ application.data.location_wheelchair_accessible.label|bleach }}**:
+```
+{% if application.data.location_wheelchair_accessible.value %}Yes{% elif application.data.location_wheelchair_accessible.value is None %}Unknown{% else %}No{% endif %}
+```
+
 **{{ application.data.time_and_date.label|bleach }}**:
 ```
 {% if application.data.time_and_date.value %}{{ application.data.time_and_date.value|bleach }}{% else %}no response{% endif %}
