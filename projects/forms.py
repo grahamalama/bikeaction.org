@@ -41,7 +41,7 @@ class ProjectApplicationForm(forms.Form):
         label="Project Overview",
         help_text=(
             "How does this project advance PBA's mission "
-            "to improve the bicycle infrastructure of Philadelphia?<br>"
+            "to improve the bicycle infrastructure of Philadelphia?<br><br>"
             "Describe how this project supports PBA initiatives around diversity, "
             "equity, and inclusion (if applicable). For example, is this project in an "
             "underrepresented district or neighborhood (districts 6-10; Strawberry Mansion "
