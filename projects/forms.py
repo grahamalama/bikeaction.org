@@ -87,9 +87,11 @@ class ProjectApplicationForm(forms.Form):
     )
     location = forms.CharField(
         label="Location (if applicable)",
-        help_text="Please note if the location is wheelchair accessible.",
         max_length=256,
         required=False,
+    )
+    location_wheelchair_accessible = forms.NullBooleanField(
+        label="Location Wheelchair Accessible?",
     )
 
     # resources
