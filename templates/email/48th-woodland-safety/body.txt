@@ -1,0 +1,34 @@
+Hello {{ first_name }},
+
+<small><i>You are receiving this email from [Philly Bike Action](https://bikeaction.org/) because you have a PBA account and/or signed our <a href='https://bikeaction.org/campaigns/47th-st-bike-lane/'>Petition for Protected Bike Lane on 47th St</a> and live within the OTIS Study Area boundaries.</i></small>
+
+<b>JOIN US AT</b>
+<div style="text-align: center; font-weight: bold">
+48TH & WOODLAND ROAD SAFETY DESIGN WORKSHOP<br>
+THURSDAY, APRIL 30, 6PM<br>
+<span style="font-weight: normal">48th & Woodland Playground - 1414 S 47th St.</span>
+</div>
+
+To attend the April 30 Design Workshop—or to join the ongoing working group list—please [e-mail Jackie Weidman](mailto:Jackie.Weidman@phila.gov?cc=Morgan.Allgrove-Hodges@phila.gov&bcc=district3@bikeaction.org&subject=attending%20April%2030%2048th%20and%20Woodland%20Design%20Meeting) (OTIS) to tell her which block you live on and that you would like to attend.
+
+—
+
+**The City of Philadelphia is working on a project to improve traffic safety around 48th and Woodland Playground**, in the area outlined in the image below. This redesign will include changes to roadways, signals, crosswalks, bike lanes, sidewalks, and more.
+
+This is a crucial one-time opportunity to make a big impact on the plan by demonstrating that near-neighbors prioritize safety and access for bicyclists and pedestrians. 
+
+**We are looking for local residents to join the working group** and have a say in this redesign project. Our records show that you have an address within or very nearby to this area, between 49th St, Kingsessing Ave, 46th St, and Paschall Ave. 
+
+The city needs to hear from more roadway safety supporters to keep this project on track. We don’t want a few outspoken opponents to derail this project. We have a few pro-safety advocates in the group already, but we need more. **Your attendance and voice will make a critical difference.**
+
+<div style="width: 100%; text-align: center">
+<img style="width: 80%; max-width: 480px" src="templates/email/48th-woodland-safety/48th-woodland.png"></img>
+</div>
+
+This April 30 Design Workshop is only for people who live **inside of these boundaries**, along with a handful of other pre-selected stakeholders. There will be a public Open House on May 21 that you can invite everyone to, even if they live outside of these lines.
+
+If you have any questions or thoughts to share with us, please e-mail [district3@bikeaction.org](mailto:district3@bikeaction.org) 
+
+Thank you for your support in making Philadelphia's streets safer for everyone who uses them\!
+
+**Philly Bike Action** 

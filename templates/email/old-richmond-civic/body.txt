@@ -1,0 +1,14 @@
+Dear {{ first_name }}
+
+<small><i>You are receiving this email from [Philly Bike Action](https://bikeaction.org/) because you have a PBA account and live in the boundaries of the Olde Richmond Civic Association.</i></small>
+
+**Your neighborhood association, [Olde Richmond Civic Association](https://www.olderichmondphilly.org/), is holding a general meeting on April 28.** This meeting will feature City Councilmember Mark Squilla and the Office of Transportation and Infrastructure Systems (OTIS). The meeting will focus on Graffiti Pier and the [recent crash](https://www.cbsnews.com/philadelphia/news/glenn-colville-cyclist-hit-and-run-vigil/) on Aramingo ave that killed Glenn Colville while he was riding his bike. This is an excellent opportunity to meet your neighbors and elected officials and advocate for safe infrastructure in your neighborhood!
+
+**Meeting Information** <br>
+*Date:* Tuesday April 28 <br>
+*Time:* 7:30–8:30pm <br>
+*Location:* [Cione Recreation Center](https://maps.app.goo.gl/miaN8p81ChZMSa376) (2600 Aramingo Ave) 
+ 
+The City has proposed two projects to improve the bike lanes on [Lehigh](https://www.phila.gov/programs/complete-streets/projects/lehigh-avenue-traffic-safety-improvement-projects/) and [Aramingo](https://www.phila.gov/programs/complete-streets/projects/aramingo-avenue-traffic-safety-project/) Avenues, but **both projects have stalled due to a lack of funding.** We are in the middle of budget season, so now is the perfect time to ask Councilmember Squilla to allocate the funding these projects need.
+
+**Philly Bike Action**

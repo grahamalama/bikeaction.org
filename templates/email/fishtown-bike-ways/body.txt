@@ -1,0 +1,11 @@
+Dear {{ first_name }}
+
+<small><i>You are receiving this email because you have a Philly Bike Action account and live in the boundaries of the Fishtown Neighbors Association.</i></small>
+
+
+On Monday 4/27, City Council will consider a bill authorizing a new bike lane on Columbia Ave from Richmond St to East Allen St. This bike lane is part of the upcoming [Fishtown Neighborhood Bikeway](https://www.phila.gov/media/20250919110000/FNA-Community-Meeting_09172025.pdf) project, which will make it safer and easier to bike in your neighborhood. This bill is required to create a crucial block of protected bike lane that will connect the neighborhood bikeway to Penn Treaty Park and the Delaware River Trail
+
+**<a href="mailto:mark.squilla@phila.gov?bcc=district1@bikeaction.org&subject=Vote%20to%20advance%20Bill%20260026%20&body=Dear%20Councilmember%20Squilla%2C%0A%0AAs%20a%20Fishtown%20resident%2C%20I%20am%20asking%20you%20to%20please%20vote%20to%20advance%20Bill%20260026%20out%20of%20committee%20during%20Monday's%20Streets%20committee%20hearing.%20This%20bill%20is%20essential%20to%20connecting%20my%20neighborhood%20to%20Penn%20Treaty%20park%20and%20the%20Delaware%20river%20trail.%0A%0A%5BAdd%20more%20about%20why%20safer%20bike%20lanes%20are%20important%20to%20you%5D%0A%0ASincerely%2C%0A%5BAdd%20your%20name%5D">Click Here</a>
+ to send an email to Councilmember Squilla asking him to support this bill.** You can use the template provided or craft your own message.
+
+**Philly Bike Action**
