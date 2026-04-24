@@ -1,12 +1,15 @@
 import asyncio
+import csv
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button
 from django.contrib import admin
 from django.db.models import Q
+from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
+from campaigns.admin import randomize_lat_long
 from facets.utils import reverse_geocode_point
 from lazer.models import Banner, ViolationReport, ViolationSubmission
 from lazer.tasks import submit_violation_report_to_ppa
@@ -120,7 +123,7 @@ class ViolationReportAdmin(ExtraButtonsMixin, admin.ModelAdmin):
         "image_tag_final",
     )
     exclude = ("redacted_image",)
-    actions = ["bulk_resubmit_violations"]
+    actions = ["bulk_resubmit_violations", "export_locations_csv"]
     raw_id_fields = ("submission",)  # Use raw ID field instead of dropdown
 
     def get_queryset(self, request):
@@ -152,6 +155,32 @@ class ViolationReportAdmin(ExtraButtonsMixin, admin.ModelAdmin):
             f"Successfully queued {count} violation report(s) for re-submission to the PPA. "
             f"Check the Celery worker logs for progress.",
         )
+
+    @admin.action(description="Export selected violations as CSV with lat/long")
+    def export_locations_csv(self, request, queryset):
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = 'attachment; filename="violation_reports_locations.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(["date", "time", "violation_type", "latitude", "longitude"])
+
+        reports = queryset.select_related("submission")
+
+        for report in reports:
+            lat, lng = randomize_lat_long(
+                report.id, report.submission.location.y, report.submission.location.x
+            )
+            writer.writerow(
+                [
+                    report.date_observed,
+                    report.time_observed,
+                    report.violation_observed_short(),
+                    lat,
+                    lng,
+                ]
+            )
+
+        return response
 
 
 class BannerAdmin(admin.ModelAdmin):
