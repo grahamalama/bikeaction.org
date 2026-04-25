@@ -395,6 +395,9 @@ class Profile(models.Model):
     def is_organizer(self):
         return bool(self.user.profile.organized_districts.all())
 
+    class Meta:
+        permissions = [("can_organize", "Can Organize")]
+
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
