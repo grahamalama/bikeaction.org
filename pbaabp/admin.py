@@ -35,11 +35,17 @@ for model in app_models:
         pass
 
 
-class OrganizerAccess:
+class OrganizerPerms:
+    """Mixin for ModelAdmins registered on `organizer_admin`. Grants module/view
+    access to organizers without going through Django's global perm system, so
+    these grants don't bleed into the default `admin.site`.
+    """
+
     def has_module_permission(self, request):
-        if request.user and request.user.profile.is_organizer:
-            return True
-        return super().has_module_permission(request)
+        return bool(request.user.is_authenticated and request.user.profile.is_organizer)
+
+    def has_view_permission(self, request, obj=None):
+        return self.has_module_permission(request)
 
 
 class OrganizerAuthenticationForm(AuthenticationForm):

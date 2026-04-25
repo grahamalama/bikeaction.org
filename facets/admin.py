@@ -18,7 +18,7 @@ from facets.models import (
     Ward,
     ZipCode,
 )
-from pbaabp.admin import ReadOnlyLeafletGeoAdminMixin, organizer_admin
+from pbaabp.admin import OrganizerPerms, ReadOnlyLeafletGeoAdminMixin, organizer_admin
 from profiles.models import Profile
 
 COLUMN_ACCESSORS = {
@@ -249,5 +249,19 @@ admin.site.register(StateSenateDistrict, StateSenateDistrictAdmin)
 admin.site.register(CongressionalDistrict, CongressionalDistrictAdmin)
 admin.site.register(Ward, WardAdmin)
 admin.site.register(Division, DivisionAdmin)
-organizer_admin.register(District, DistrictAdmin)
-organizer_admin.register(RegisteredCommunityOrganization, RegisteredCommunityOrganizationAdmin)
+
+
+class OrganizerDistrictAdmin(OrganizerPerms, DistrictAdmin):
+    pass
+
+
+class OrganizerRegisteredCommunityOrganizationAdmin(
+    OrganizerPerms, RegisteredCommunityOrganizationAdmin
+):
+    pass
+
+
+organizer_admin.register(District, OrganizerDistrictAdmin)
+organizer_admin.register(
+    RegisteredCommunityOrganization, OrganizerRegisteredCommunityOrganizationAdmin
+)

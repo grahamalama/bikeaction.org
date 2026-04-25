@@ -18,7 +18,7 @@ from reportlab.pdfgen import canvas
 
 from facets.models import District, RegisteredCommunityOrganization
 from membership.models import Membership
-from pbaabp.admin import ReadOnlyLeafletGeoAdminMixin, organizer_admin
+from pbaabp.admin import OrganizerPerms, ReadOnlyLeafletGeoAdminMixin, organizer_admin
 from profiles.models import DiscordActivity, DoNotEmail, Profile, ShirtOrder
 
 
@@ -1071,7 +1071,7 @@ class ShirtOrderAdmin(ReadOnlyLeafletGeoAdminMixin, admin.ModelAdmin):
 admin.site.register(ShirtOrder, ShirtOrderAdmin)
 
 
-class OrganizerProfileAdmin(ProfileAdmin):
+class OrganizerProfileAdmin(OrganizerPerms, ProfileAdmin):
     autocomplete_fields = []
     list_filter = [
         ProfileCompleteFilter,
@@ -1115,7 +1115,7 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ["profile"]
 
 
-class OrganizerUserAdmin(UserAdmin):
+class OrganizerUserAdmin(OrganizerPerms, UserAdmin):
     list_display = ["first_name", "last_name"]
 
     def has_module_permission(self, request):

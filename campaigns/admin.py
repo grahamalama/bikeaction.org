@@ -10,7 +10,7 @@ from ordered_model.admin import OrderedModelAdmin
 from campaigns.models import Campaign, Petition, PetitionCheckbox, PetitionSignature
 from campaigns.tasks import geocode_signature
 from facets.models import District, RegisteredCommunityOrganization
-from pbaabp.admin import ReadOnlyLeafletGeoAdminMixin, organizer_admin
+from pbaabp.admin import OrganizerPerms, ReadOnlyLeafletGeoAdminMixin, organizer_admin
 
 
 class CampaignAdmin(OrderedModelAdmin):
@@ -56,7 +56,7 @@ def pretty_report(modeladmin, request, queryset):
     return render(request, "petition_signatures_pretty_report.html", {"petitions": _petitions})
 
 
-class OrganizerCampaignAdmin(CampaignAdmin):
+class OrganizerCampaignAdmin(OrganizerPerms, CampaignAdmin):
     def has_add_permission(self, request):
         return True
 
@@ -122,16 +122,8 @@ class PetitionAdmin(admin.ModelAdmin):
             report += f"{rco.name}: {cnt}\n"
         return report
 
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        q_objects = Q()
-        for district in request.user.profile.organized_districts.all():
-            q_objects |= Q(campaign__districts__in=[district])
-        qs = qs.filter(q_objects)
-        return qs
 
-
-class OrganizerPetitionAdmin(admin.ModelAdmin):
+class OrganizerPetitionAdmin(OrganizerPerms, admin.ModelAdmin):
     def has_add_permission(self, request):
         return True
 
@@ -144,6 +136,14 @@ class OrganizerPetitionAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        q_objects = Q()
+        for district in request.user.profile.organized_districts.all():
+            q_objects |= Q(campaign__districts__in=[district])
+        qs = qs.filter(q_objects)
+        return qs
 
 
 def geocode(modeladmin, request, queryset):
@@ -289,7 +289,7 @@ class PetitionSignatureAdmin(admin.ModelAdmin, ReadOnlyLeafletGeoAdminMixin):
     has_comment.boolean = True
 
 
-class OrganizerPetitionSignatureAdmin(PetitionSignatureAdmin):
+class OrganizerPetitionSignatureAdmin(OrganizerPerms, PetitionSignatureAdmin):
     def has_add_permission(self, request):
         return False
 

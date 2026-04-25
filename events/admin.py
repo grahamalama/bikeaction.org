@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.db.models import Q
 
 from events.models import EventRSVP, EventSignIn, ScheduledEvent
-from pbaabp.admin import organizer_admin
+from pbaabp.admin import OrganizerPerms, organizer_admin
 
 
 class ScheduledEventAdmin(admin.ModelAdmin):
@@ -13,7 +13,7 @@ class ScheduledEventAdmin(admin.ModelAdmin):
     search_fields = ["title", "districts", "registered_community_organizations"]
 
 
-class OrganizerScheduledEventAdmin(ScheduledEventAdmin):
+class OrganizerScheduledEventAdmin(OrganizerPerms, ScheduledEventAdmin):
     def has_add_permission(self, request):
         return True
 
@@ -65,7 +65,7 @@ class EventSignInAdmin(admin.ModelAdmin):
         return obj.event.title
 
 
-class OrganizerEventSignInAdmin(EventSignInAdmin):
+class OrganizerEventSignInAdmin(OrganizerPerms, EventSignInAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         q_objects = Q()
@@ -99,7 +99,7 @@ class EventRSVPAdmin(admin.ModelAdmin):
         return qs
 
 
-class OrganizerEventRSVPAdmin(EventRSVPAdmin):
+class OrganizerEventRSVPAdmin(OrganizerPerms, EventRSVPAdmin):
     pass
 
 
