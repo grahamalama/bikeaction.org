@@ -188,6 +188,15 @@ class DistrictAdmin(FacetAdmin):
     autocomplete_fields = ["organizers"]
     search_fields = ["name"]
 
+    def save_related(self, request, form, formsets, change):
+        from profiles.signals import _sync_organizer_group
+
+        old_ids = set(form.instance.organizers.values_list("pk", flat=True)) if change else set()
+        super().save_related(request, form, formsets, change)
+        new_ids = set(form.instance.organizers.values_list("pk", flat=True))
+        for profile in Profile.objects.filter(pk__in=old_ids ^ new_ids):
+            _sync_organizer_group(profile)
+
 
 class RegisteredCommunityOrganizationAdmin(FacetAdmin):
     list_display = ["name", "targetable"]

@@ -851,6 +851,12 @@ class ProfileAdmin(ReadOnlyLeafletGeoAdminMixin, admin.ModelAdmin):
 
         super().save_model(request, obj, form, change)
 
+    def save_related(self, request, form, formsets, change):
+        from profiles.signals import _sync_organizer_group
+
+        super().save_related(request, form, formsets, change)
+        _sync_organizer_group(form.instance)
+
 
 @admin.action(description="Mark selected shirts as fulfilled")
 def make_fulfilled(modeladmin, request, queryset):
