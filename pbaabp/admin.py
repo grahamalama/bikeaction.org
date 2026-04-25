@@ -1,8 +1,12 @@
 from django.apps import apps
 from django.contrib import admin
 from django.contrib.admin.sites import NotRegistered
+from django.contrib.auth.admin import GroupAdmin as DjangoGroupAdmin
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
+from django.urls import reverse
+from django.utils.html import format_html, format_html_join
 from django.utils.translation import gettext_lazy as _
 from djstripe.models import WebhookEndpoint
 from leaflet.admin import LeafletGeoAdminMixin
@@ -91,3 +95,37 @@ class OrganizerAdminSite(admin.AdminSite):
 
 organizer_admin = OrganizerAdminSite(name="organizer_admin")
 organizer_admin.disable_action("delete_selected")
+
+
+admin.site.unregister(Group)
+
+
+@admin.register(Group)
+class GroupAdmin(DjangoGroupAdmin):
+    list_display = ("name", "member_count")
+    readonly_fields = ("members_list",)
+    fieldsets = ((None, {"fields": ("name", "permissions", "members_list")}),)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("user_set")
+
+    @admin.display(description="Members", ordering="user_set__count")
+    def member_count(self, obj):
+        return obj.user_set.count()
+
+    @admin.display(description="Members")
+    def members_list(self, obj):
+        users = obj.user_set.order_by("last_name", "first_name", "username")
+        if not users:
+            return "—"
+        return format_html_join(
+            format_html("<br>"),
+            '<a href="{}">{}</a>',
+            (
+                (
+                    reverse("admin:auth_user_change", args=[u.pk]),
+                    u.get_full_name() or u.username,
+                )
+                for u in users
+            ),
+        )
