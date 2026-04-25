@@ -252,13 +252,15 @@ admin.site.register(Division, DivisionAdmin)
 
 
 class OrganizerDistrictAdmin(OrganizerPerms, DistrictAdmin):
-    pass
+    def has_add_permission(self, request):
+        return False
 
 
 class OrganizerRegisteredCommunityOrganizationAdmin(
     OrganizerPerms, RegisteredCommunityOrganizationAdmin
 ):
-    pass
+    def has_add_permission(self, request):
+        return False
 
 
 organizer_admin.register(District, OrganizerDistrictAdmin)

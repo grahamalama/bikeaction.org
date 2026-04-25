@@ -1073,12 +1073,57 @@ admin.site.register(ShirtOrder, ShirtOrderAdmin)
 
 class OrganizerProfileAdmin(OrganizerPerms, ProfileAdmin):
     autocomplete_fields = []
+    list_display = [
+        "_name",
+        "discord_handle",
+        "profile_complete",
+        "apps_connected",
+        "geolocated",
+        "council_district_display",
+        "emails_last_30_days",
+        "created_at",
+        "districts_organized",
+    ]
     list_filter = [
         ProfileCompleteFilter,
         AppsConnectedFilter,
         GeolocatedFilter,
         OrganizerDistrictFilter,
         OrganizerRCOFilter,
+    ]
+    search_fields = [
+        "user__first_name",
+        "user__last_name",
+        "user__socialaccount__extra_data__username",
+    ]
+    fieldsets = [
+        (
+            "Membership",
+            {
+                "fields": [
+                    "membership",
+                    "active_subscription",
+                    "apps_connected",
+                    "discord_activity",
+                ]
+            },
+        ),
+        (
+            "Demographics",
+            {"fields": ["zip_code", "council_district_calculated"]},
+        ),
+        (
+            "Preferences",
+            {"fields": ["newsletter_opt_in"]},
+        ),
+        (
+            "Donations",
+            {"fields": ["donation_history"]},
+        ),
+        (
+            "Email History",
+            {"fields": ["email_activity_sparkline", "email_history"]},
+        ),
     ]
 
     def has_module_permission(self, request):
@@ -1143,7 +1188,6 @@ class OrganizerUserAdmin(OrganizerPerms, UserAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
-organizer_admin.register(User, OrganizerUserAdmin)
 
 
 class DoNotEmailAdmin(admin.ModelAdmin):

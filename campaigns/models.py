@@ -343,4 +343,4 @@ class PetitionSignature(models.Model):
         super(PetitionSignature, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.email}"
+        return f"{self.first_name} {self.last_name}"

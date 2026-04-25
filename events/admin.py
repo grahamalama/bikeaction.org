@@ -15,7 +15,7 @@ class ScheduledEventAdmin(admin.ModelAdmin):
 
 class OrganizerScheduledEventAdmin(OrganizerPerms, ScheduledEventAdmin):
     def has_add_permission(self, request):
-        return True
+        return False
 
     def has_change_permission(self, request, obj=None):
         if obj:
@@ -66,6 +66,30 @@ class EventSignInAdmin(admin.ModelAdmin):
 
 
 class OrganizerEventSignInAdmin(OrganizerPerms, EventSignInAdmin):
+    actions = []
+    list_display = ["get_name", "get_event", "council_district", "newsletter_opt_in"]
+    list_filter = ["event__title", "council_district", "zip_code"]
+    search_fields = ["first_name", "last_name", "zip_code"]
+    fields = [
+        "event",
+        "first_name",
+        "last_name",
+        "zip_code",
+        "council_district",
+        "newsletter_opt_in",
+    ]
+    readonly_fields = [
+        "event",
+        "first_name",
+        "last_name",
+        "zip_code",
+        "council_district",
+        "newsletter_opt_in",
+    ]
+
+    def has_add_permission(self, request):
+        return False
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         q_objects = Q()
@@ -90,6 +114,17 @@ class EventRSVPAdmin(admin.ModelAdmin):
     def get_event(self, obj):
         return obj.event.title
 
+
+class OrganizerEventRSVPAdmin(OrganizerPerms, EventRSVPAdmin):
+    list_display = ["get_name", "get_event"]
+    list_filter = ["event__title"]
+    search_fields = ["first_name", "last_name"]
+    fields = ["event", "first_name", "last_name"]
+    readonly_fields = ["event", "first_name", "last_name"]
+
+    def has_add_permission(self, request):
+        return False
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         q_objects = Q()
@@ -97,10 +132,6 @@ class EventRSVPAdmin(admin.ModelAdmin):
             q_objects |= Q(event__districts__in=[district])
         qs = qs.filter(q_objects)
         return qs
-
-
-class OrganizerEventRSVPAdmin(OrganizerPerms, EventRSVPAdmin):
-    pass
 
 
 admin.site.register(ScheduledEvent, ScheduledEventAdmin)

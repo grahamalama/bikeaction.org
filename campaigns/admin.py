@@ -3,7 +3,6 @@ import json
 
 from csvexport.actions import csvexport
 from django.contrib import admin
-from django.db.models import Q
 from django.shortcuts import render
 from ordered_model.admin import OrderedModelAdmin
 
@@ -11,6 +10,14 @@ from campaigns.models import Campaign, Petition, PetitionCheckbox, PetitionSigna
 from campaigns.tasks import geocode_signature
 from facets.models import District, RegisteredCommunityOrganization
 from pbaabp.admin import OrganizerPerms, ReadOnlyLeafletGeoAdminMixin, organizer_admin
+
+
+def _organizer_petitions(user):
+    """Petitions visible to an organizer: those whose campaign is in any of
+    their organized districts."""
+    return Petition.objects.filter(
+        campaign__districts__in=user.profile.organized_districts.all()
+    ).distinct()
 
 
 class CampaignAdmin(OrderedModelAdmin):
@@ -58,7 +65,7 @@ def pretty_report(modeladmin, request, queryset):
 
 class OrganizerCampaignAdmin(OrganizerPerms, CampaignAdmin):
     def has_add_permission(self, request):
-        return True
+        return False
 
     def has_change_permission(self, request, obj=None):
         if obj:
@@ -125,7 +132,7 @@ class PetitionAdmin(admin.ModelAdmin):
 
 class OrganizerPetitionAdmin(OrganizerPerms, admin.ModelAdmin):
     def has_add_permission(self, request):
-        return True
+        return False
 
     def has_change_permission(self, request, obj=None):
         if obj:
@@ -138,12 +145,7 @@ class OrganizerPetitionAdmin(OrganizerPerms, admin.ModelAdmin):
         return False
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        q_objects = Q()
-        for district in request.user.profile.organized_districts.all():
-            q_objects |= Q(campaign__districts__in=[district])
-        qs = qs.filter(q_objects)
-        return qs
+        return super().get_queryset(request).filter(pk__in=_organizer_petitions(request.user))
 
 
 def geocode(modeladmin, request, queryset):
@@ -182,6 +184,19 @@ class DistrictFilter(admin.SimpleListFilter):
         if self.value():
             d = District.objects.get(id=self.value())
             return queryset.filter(location__within=d.mpoly)
+        return queryset
+
+
+class OrganizerPetitionListFilter(admin.SimpleListFilter):
+    title = "Petition"
+    parameter_name = "petition"
+
+    def lookups(self, request, model_admin):
+        return [(str(p.pk), str(p)) for p in _organizer_petitions(request.user).order_by("title")]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(petition__pk=self.value())
         return queryset
 
 
@@ -279,7 +294,8 @@ class PetitionSignatureAdmin(admin.ModelAdmin, ReadOnlyLeafletGeoAdminMixin):
     get_name.short_description = "Name"
 
     def get_petition(self, obj):
-        return str(obj.petition)[:37] + "..." if len(str(obj.petition)) > 37 else ""
+        s = str(obj.petition)
+        return s[:37] + "..." if len(s) > 37 else s
 
     get_petition.short_description = "Petition"
 
@@ -290,6 +306,33 @@ class PetitionSignatureAdmin(admin.ModelAdmin, ReadOnlyLeafletGeoAdminMixin):
 
 
 class OrganizerPetitionSignatureAdmin(OrganizerPerms, PetitionSignatureAdmin):
+    actions = [heatmap]
+    list_display = [
+        "get_name",
+        "created_at",
+        "has_comment",
+        "visible",
+        "get_petition",
+    ]
+    list_filter = [OrganizerPetitionListFilter, "visible", DistrictFilter, CheckboxResponseFilter]
+    search_fields = ["first_name", "last_name", "comment"]
+    fields = [
+        "first_name",
+        "last_name",
+        "comment",
+        "petition",
+        "created_at",
+        "checkbox_responses_display",
+    ]
+    readonly_fields = [
+        "first_name",
+        "last_name",
+        "comment",
+        "petition",
+        "created_at",
+        "checkbox_responses_display",
+    ]
+
     def has_add_permission(self, request):
         return False
 
@@ -300,12 +343,7 @@ class OrganizerPetitionSignatureAdmin(OrganizerPerms, PetitionSignatureAdmin):
         return False
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        q_objects = Q()
-        for district in request.user.profile.organized_districts.all():
-            q_objects |= Q(petition__campaign__districts__in=[district])
-        qs = qs.filter(q_objects)
-        return qs
+        return super().get_queryset(request).filter(petition__in=_organizer_petitions(request.user))
 
 
 admin.site.register(Campaign, CampaignAdmin)

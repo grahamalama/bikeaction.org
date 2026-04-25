@@ -396,7 +396,7 @@ class Profile(models.Model):
         return bool(self.user.profile.organized_districts.all())
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name} - {self.user.email}"
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 class DiscordActivity(models.Model):
