@@ -1,6 +1,5 @@
 from csvexport.actions import csvexport
 from django.contrib import admin
-from django.db.models import Q
 
 from events.models import EventRSVP, EventSignIn, ScheduledEvent
 from pbaabp.admin import OrganizerPerms, organizer_admin
@@ -30,6 +29,14 @@ class OrganizerScheduledEventAdmin(OrganizerPerms, ScheduledEventAdmin):
                 set(obj.districts.all())
             )
         return False
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .filter(districts__in=request.user.profile.organized_districts.all())
+            .distinct()
+        )
 
 
 class EventSignInAdmin(admin.ModelAdmin):
@@ -91,12 +98,12 @@ class OrganizerEventSignInAdmin(OrganizerPerms, EventSignInAdmin):
         return False
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        q_objects = Q()
-        for district in request.user.profile.organized_districts.all():
-            q_objects |= Q(event__districts__in=[district])
-        qs = qs.filter(q_objects)
-        return qs
+        return (
+            super()
+            .get_queryset(request)
+            .filter(event__districts__in=request.user.profile.organized_districts.all())
+            .distinct()
+        )
 
 
 class EventRSVPAdmin(admin.ModelAdmin):
@@ -116,6 +123,7 @@ class EventRSVPAdmin(admin.ModelAdmin):
 
 
 class OrganizerEventRSVPAdmin(OrganizerPerms, EventRSVPAdmin):
+    actions = []
     list_display = ["get_name", "get_event"]
     list_filter = ["event__title"]
     search_fields = ["first_name", "last_name"]
@@ -126,12 +134,12 @@ class OrganizerEventRSVPAdmin(OrganizerPerms, EventRSVPAdmin):
         return False
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        q_objects = Q()
-        for district in request.user.profile.organized_districts.all():
-            q_objects |= Q(event__districts__in=[district])
-        qs = qs.filter(q_objects)
-        return qs
+        return (
+            super()
+            .get_queryset(request)
+            .filter(event__districts__in=request.user.profile.organized_districts.all())
+            .distinct()
+        )
 
 
 admin.site.register(ScheduledEvent, ScheduledEventAdmin)

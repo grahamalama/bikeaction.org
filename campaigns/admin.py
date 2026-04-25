@@ -77,6 +77,14 @@ class OrganizerCampaignAdmin(OrganizerPerms, CampaignAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .filter(districts__in=request.user.profile.organized_districts.all())
+            .distinct()
+        )
+
 
 class PetitionCheckboxInline(admin.TabularInline):
     model = PetitionCheckbox

@@ -1142,11 +1142,13 @@ class OrganizerProfileAdmin(OrganizerPerms, ProfileAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
+        districts = request.user.profile.organized_districts.all()
+        if not districts:
+            return qs.none()
         q_objects = Q()
-        for district in request.user.profile.organized_districts.all():
+        for district in districts:
             q_objects |= Q(location__within=district.mpoly)
-        qs = qs.filter(q_objects)
-        return qs
+        return qs.filter(q_objects)
 
 
 admin.site.register(Profile, ProfileAdmin)
@@ -1179,11 +1181,13 @@ class OrganizerUserAdmin(OrganizerPerms, UserAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
+        districts = request.user.profile.organized_districts.all()
+        if not districts:
+            return qs.none()
         q_objects = Q()
-        for district in request.user.profile.organized_districts.all():
+        for district in districts:
             q_objects |= Q(profile__location__within=district.mpoly)
-        qs = qs.filter(q_objects)
-        return qs
+        return qs.filter(q_objects)
 
 
 admin.site.unregister(User)

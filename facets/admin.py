@@ -251,13 +251,26 @@ admin.site.register(Ward, WardAdmin)
 admin.site.register(Division, DivisionAdmin)
 
 
-class OrganizerDistrictAdmin(OrganizerPerms, DistrictAdmin):
+class _NoFacetCSVExport:
+    """Strips FacetAdmin's profile-CSV-export action and custom URLs so they
+    aren't reachable from `/organizer`. The export pulls profile PII (email,
+    street_address) without scoping to the organizer's districts, so the
+    safest fix is to remove it entirely on organizer-facing admins."""
+
+    actions = []
+    change_form_template = None
+
+    def get_urls(self):
+        return admin.ModelAdmin.get_urls(self)
+
+
+class OrganizerDistrictAdmin(_NoFacetCSVExport, OrganizerPerms, DistrictAdmin):
     def has_add_permission(self, request):
         return False
 
 
 class OrganizerRegisteredCommunityOrganizationAdmin(
-    OrganizerPerms, RegisteredCommunityOrganizationAdmin
+    _NoFacetCSVExport, OrganizerPerms, RegisteredCommunityOrganizationAdmin
 ):
     def has_add_permission(self, request):
         return False
