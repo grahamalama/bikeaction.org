@@ -1,5 +1,6 @@
 volumes:
   lazer:
+  pgdata:
 
 services:
   postgres:
@@ -15,6 +16,8 @@ services:
       POSTGRES_PASSWORD: pbaabp
       POSTGRES_DB: pbaabp
       POSTGRES_HOST_AUTH_METHOD: trust  # never do this in production!
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "pbaabp", "-d", "pbaabp"]
       interval: 1s
